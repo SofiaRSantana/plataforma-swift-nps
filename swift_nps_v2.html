@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>SwiftNPS v2 | A Voz dos Clientes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+  <style>
+    /* ── TOKENS ESCURO ──────────────── */
+    :root {
+      --bg:#0f1115; --sidebar:#141922; --surface:#1a202b; --surface-2:#202838;
+      --border:#2a3345; --text:#f6f8fb; --muted:#96a0b2;
+      --brand:#f28c28; --brand-soft:rgba(242,140,40,.14);
+      --green:#2ecc71; --yellow:#f1c40f; --red:#e74c3c; --blue:#5b8def;
+      --filter-bg:var(--surface); --filter-label:var(--muted);
+      --sb-w:280px;
+    }
+    [data-theme="light"] {
+      --bg:#f4f5f7; --sidebar:#fff; --surface:#fff; --surface-2:#f0f2f6;
+      --border:#e0e4ed; --text:#18191c; --muted:#6b7280;
+      --brand:#c96a0a; --brand-soft:rgba(201,106,10,.10);
+      --green:#16a34a; --yellow:#ca8a04; --red:#dc2626; --blue:#2563eb;
+      --filter-bg:#eef0f5; --filter-label:#4b5563;
+    }
+    /* Modo escuro: forçar texto claro em tudo fora do login */
+    [data-theme="dark"] .app *{color:var(--text);}
+    [data-theme="dark"] .app .c-brand{color:var(--brand)!important;}
+    [data-theme="dark"] .app .c-green{color:var(--green)!important;}
+    [data-theme="dark"] .app .c-red{color:var(--red)!important;}
+    [data-theme="dark"] .app .c-blue{color:var(--blue)!important;}
+    [data-theme="dark"] .app .c-yellow{color:var(--yellow)!important;}
+    [data-theme="dark"] .app .card h3{color:var(--muted);}
+    [data-theme="dark"] .app .kpi .desc{color:var(--muted);}
+    [data-theme="dark"] .app .sb-brand small{color:var(--muted);}
+    [data-theme="dark"] .app .menu-info small{color:var(--muted);}
+    [data-theme="dark"] .app .menu button.active{color:var(--brand);}
+    [data-theme="dark"] .app .topic small{color:var(--muted);}
+    [data-theme="dark"] .app .badge{color:var(--text);}
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--text);background:var(--bg);transition:background .2s,color .2s;}
+    button,select,input{font:inherit;cursor:pointer;}
+
+    /* ── LOGIN ──────────────────────────────────────────── */
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:#FFFFFF;}
+    .login-card{width:min(960px,100%);display:grid;grid-template-columns:1.05fr .95fr;
+      background:rgba(255,255,255,.96);border:1px solid #E0E0E0;border-radius:24px;
+      box-shadow:0 20px 50px rgba(0,0,0,.12);overflow:hidden;}
+    .login-hero{padding:40px;background:linear-gradient(135deg,rgba(245,240,234,.95),rgba(255,255,255,.95));border-right:1px solid #E0E0E0;}
+    .login-logo{max-height:48px;object-fit:contain;margin-bottom:16px;}
+    .brand-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;background:rgba(242,140,40,.14);color:#c96a0a;font-weight:800;font-size:13px;letter-spacing:.25px;-webkit-font-smoothing:antialiased;}
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:#f28c28;}
+    .login-hero h1{font-size:42px;line-height:1.05;margin:18px 0 12px;letter-spacing:-1.5px;color:#212121;}
+    .login-hero p{color:#424242;line-height:1.7;max-width:46ch;}
+    .login-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px;}
+    .mini-stat{background:#fff8f0;border:1px solid #f5ddb8;border-radius:16px;padding:16px;}
+    .mini-stat strong{display:block;font-size:22px;margin-bottom:4px;color:#f28c28;}
+    .mini-stat span{color:#424242;font-size:12px;}
+    .login-form{padding:40px;display:flex;flex-direction:column;justify-content:center;gap:14px;background:#FFFFFF;}
+    .login-form h2{margin:0 0 6px;font-size:24px;letter-spacing:-.6px;color:#212121;}
+    .field label{display:block;margin-bottom:8px;font-size:12px;color:#424242;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+    .field input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid #E0E0E0;background:#faf6f1;color:#212121;outline:none;}
+    .field input:focus{border-color:#f28c28;box-shadow:0 0 0 3px rgba(242,140,40,.14);}
+    .primary-btn{border:0;border-radius:14px;padding:14px 18px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#f28c28,#e06010);color:#FFFFFF;}
+    .primary-btn:hover{background:linear-gradient(135deg,#e06010,#B71C1C);}
+    .login-hint{color:#424242;font-size:12px;line-height:1.6;}
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .app{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:100vh;transition:grid-template-columns .25s;}
+    .app.collapsed{--sb-w:64px;}
+
+    /* ── SIDEBAR ────────────────────────────────────────── */
+    .sidebar{background:var(--sidebar);border-right:1px solid var(--border);
+      padding:18px 12px;display:flex;flex-direction:column;
+      position:sticky;top:0;height:100vh;overflow:hidden;width:var(--sb-w);transition:width .25s;}
+
+    .sb-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-shrink:0;position:relative;}
+    .sb-dot{width:14px;height:14px;border-radius:50%;background:var(--brand);flex-shrink:0;cursor:pointer;}
+    .sb-toggle{position:absolute;left:0;top:0;width:14px;height:14px;border:0;background:none;cursor:pointer;padding:0;}
+    .sb-toggle::after{content:"";position:absolute;inset:-8px;}
+    .sb-brand{font-weight:800;font-size:16px;letter-spacing:-.5px;white-space:nowrap;overflow:hidden;transition:opacity .2s;}
+    .sb-brand small{display:block;color:var(--muted);font-size:12px;font-weight:600;margin-top:1px;}
+    .app.collapsed .sb-brand{opacity:0;pointer-events:none;}
+
+    .sb-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.9px;padding:0 10px;margin:16px 0 8px;white-space:nowrap;overflow:hidden;transition:opacity .2s;}
+    .app.collapsed .sb-label{opacity:0;}
+
+    .menu{display:grid;gap:4px;}
+    .menu button{display:flex;align-items:flex-start;gap:10px;text-align:left;
+      background:transparent;border:1px solid transparent;padding:12px 14px;border-radius:14px;
+      white-space:nowrap;overflow:hidden;transition:background .12s;}
+    .menu button:hover{background:var(--surface-2);}
+    .menu button.active{background:var(--brand-soft);border-color:rgba(242,140,40,.35);color:var(--brand);}
+    .menu-num{font-weight:800;font-size:12px;flex-shrink:0;margin-top:1px;color:var(--muted);}
+    .menu-info{overflow:hidden;transition:opacity .2s;}
+    .menu-info strong{display:block;font-size:13px;font-weight:600;}
+    .menu-info small{color:var(--muted);font-size:12px;margin-top:2px;display:block;}
+    .app.collapsed .menu-info{opacity:0;}
+
+    .sb-footer{margin-top:auto;padding-top:20px;display:flex;flex-direction:column;gap:10px;}
+    .theme-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);}
+    .theme-label{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;transition:opacity .2s;}
+    .app.collapsed .theme-label{opacity:0;}
+    .toggle-track{width:44px;height:24px;border-radius:999px;background:var(--border);position:relative;cursor:pointer;border:none;padding:0;flex-shrink:0;transition:background .2s;}
+    .toggle-track.on{background:var(--brand);}
+    .toggle-knob{position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;}
+    .toggle-track.on .toggle-knob{left:23px;}
+    .logout-btn{border:1px solid var(--border);background:none;color:var(--muted);border-radius:14px;padding:10px 14px;font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;transition:opacity .2s;}
+    .app.collapsed .logout-btn{opacity:0;pointer-events:none;}
+
+    /* ── MAIN ───────────────────────────────────────────── */
+    .main{padding:24px 28px 48px;overflow-y:auto;min-width:0;}
+
+    .topbar{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;}
+    .topbar h1{margin:0;font-size:26px;letter-spacing:-1px;color:var(--brand);}
+    .topbar p{margin:5px 0 0;color:var(--muted);font-size:13px;}
+    .topbar-right{display:flex;align-items:center;}
+    .swift-logo{height:52px;max-width:220px;object-fit:contain;position:fixed;top:16px;right:24px;z-index:100;filter:drop-shadow(0 2px 6px rgba(0,0,0,.10));}
+
+    /* ── FILTER BAR ─────────────────────────────────────── */
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;
+      background:var(--surface);border:1px solid var(--border);border-radius:16px;
+      padding:14px 18px;margin-bottom:22px;}
+    .fg{display:flex;flex-direction:column;gap:4px;}
+    .fg label{font-size:11px;font-weight:700;color:var(--filter-label);text-transform:uppercase;letter-spacing:.6px;}
+    .fg select,.fg input[type=month]{background:var(--filter-bg);color:var(--text);border:1px solid var(--border);
+      border-radius:10px;padding:8px 10px;font-size:13px;outline:none;}
+    .fg select:focus,.fg input:focus{border-color:var(--brand);}
+    .filter-divider{width:1px;background:var(--border);align-self:stretch;margin:0 4px;}
+    .chip-group{display:flex;gap:6px;}
+    .chip{padding:7px 12px;border-radius:999px;border:1px solid var(--border);
+      background:var(--filter-bg);color:var(--text);font-size:12px;font-weight:600;transition:all .12s;}
+    .chip.active{background:var(--brand-soft);border-color:var(--brand);color:var(--brand);}
+    .filter-reset{background:none;border:1px solid var(--border);border-radius:10px;
+      padding:8px 12px;color:var(--muted);font-size:12px;align-self:flex-end;}
+    .filter-reset:hover{background:var(--surface-2);color:var(--text);}
+
+    /* ── GRIDS / CARDS ──────────────────────────────────── */
+    .g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;}
+    .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+    .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+    .g21{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+    .mt{margin-top:16px;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;}
+    .card h3{margin:0 0 12px;color:var(--muted);font-size:11px;letter-spacing:.9px;text-transform:uppercase;font-weight:700;}
+    .kpi .val{font-size:34px;font-weight:800;letter-spacing:-1.5px;line-height:1;color:var(--text);}
+    .kpi .desc{margin-top:7px;color:var(--muted);font-size:12px;}
+    .c-brand{color:var(--brand)!important;} .c-green{color:var(--green)!important;} .c-red{color:var(--red)!important;}
+    .c-blue{color:var(--blue)!important;} .c-yellow{color:var(--yellow)!important;}
+    .page{display:none;} .page.active{display:block;}
+
+    /* fill-card: big numbers preenchem o card */
+    .fill-card{height:100%;display:flex;flex-direction:column;}
+    .fill-card .g3,.fill-card .g2,.fill-card .g4{flex:1;}
+    .fill-card .card.kpi{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+
+    .table{width:100%;border-collapse:collapse;}
+    .table th,.table td{text-align:left;padding:10px 4px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);}
+    .table th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
+    .table tr:last-child td{border:0;}
+
+    .topic{padding:12px 14px;border:1px solid var(--border);background:var(--surface-2);border-radius:14px;margin-bottom:10px;line-height:1.6;}
+    .topic strong{font-size:13px;} .topic small{color:var(--muted);font-size:12px;}
+    .comment{padding:14px;border:1px solid var(--border);background:var(--surface-2);border-radius:16px;margin-bottom:12px;line-height:1.65;}
+    .badge{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700;margin-right:4px;border:1px solid transparent;}
+    .b-green{background:rgba(46,204,113,.14);color:var(--green);}
+    .b-yellow{background:rgba(241,196,15,.14);color:var(--yellow);}
+    .b-red{background:rgba(231,76,60,.14);color:var(--red);}
+    .bar-track{height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin:5px 0 14px;}
+    .bar-fill{height:100%;border-radius:999px;}
+    .insight{background:var(--surface-2);border-left:3px solid var(--brand);border-radius:0 14px 14px 0;padding:14px 16px;font-size:13px;line-height:1.75;color:var(--muted);}
+    .insight strong{color:var(--text);}
+    .season-badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;margin-right:6px;}
+    .s-verao{background:rgba(231,76,60,.14);color:var(--red);}
+    .s-outono{background:rgba(241,196,15,.14);color:var(--yellow);}
+    .s-inverno{background:rgba(91,141,239,.14);color:var(--blue);}
+    .s-fimano{background:rgba(242,140,40,.14);color:var(--brand);}
+
+    canvas{width:100%!important;max-height:280px;}
+
+    @media(max-width:1100px){.app{grid-template-columns:1fr!important;} .sidebar{height:auto;position:static;width:100%!important;} .g4,.g2,.g21,.g3{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<section id="loginView">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-hero">
+        <img class="login-logo" src="./logo_swift.png" alt="Swift"/>
+        <div class="brand-badge"><span class="brand-dot"></span> SwiftNPS · A Voz dos Clientes</div>
+        <h1>Transforme comentários em decisão.</h1>
+        <p>Análise de satisfação com Inteligência Artificial. Login de admin para acessar todas as telas.</p>
+        <div class="login-stats">
+          <div class="mini-stat"><strong>0.0%%</strong><span>NPS geral</span></div>
+          <div class="mini-stat"><strong>228</strong><span>Lojas analisadas</span></div>
+          <div class="mini-stat"><strong>228k</strong><span>Avaliações</span></div>
+        </div>
+      </div>
+      <div class="login-form">
+        <h2>Login</h2>
+        <div class="field"><label>Usuário</label><input id="lu" placeholder="admin"/></div>
+        <div class="field"><label>Senha</label><input id="lp" type="password" placeholder="admin"/></div>
+        <button class="primary-btn" id="loginBtn">Entrar</button>
+        <div class="login-hint">Credenciais: <b>admin / admin</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="appView" class="app" style="display:none;">
+
+  <aside class="sidebar">
+    <div class="sb-head">
+      <span class="sb-dot"></span>
+      <button class="sb-toggle" id="sbToggle" title="Abrir/fechar menu"></button>
+      <div class="sb-brand">SwiftNPS<small>A Voz dos Clientes</small></div>
+    </div>
+
+    <div class="sb-label">Navegação</div>
+    <nav class="menu">
+      <button class="active" data-page="p1"><span class="menu-num">01</span><span class="menu-info"><strong>Dashboard Executivo</strong><small>KPIs gerais e panorama</small></span></button>
+      <button data-page="p2"><span class="menu-num">02</span><span class="menu-info"><strong>Evolução do NPS</strong><small>Tendência temporal</small></span></button>
+      <button data-page="p3"><span class="menu-num">03</span><span class="menu-info"><strong>Comparação Gerencial</strong><small>Regular vs Tocador</small></span></button>
+      <button data-page="p4"><span class="menu-num">04</span><span class="menu-info"><strong>Sentimento e Temas</strong><small>Categorias e distribuição</small></span></button>
+      <button data-page="p5"><span class="menu-num">05</span><span class="menu-info"><strong>Sazonalidade</strong><small>Problemas por período</small></span></button>
+      <button data-page="p6"><span class="menu-num">06</span><span class="menu-info"><strong>Comentários por Loja</strong><small>Sankey + divergências</small></span></button>
+    </nav>
+
+    <div class="sb-footer">
+      <div class="theme-row">
+        <button class="toggle-track" id="themeToggle"><span class="toggle-knob"></span></button>
+        <span class="theme-label" id="themeLabel">Modo claro</span>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Sair da conta</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div><h1 id="pageTitle">Dashboard Executivo</h1><p id="pageDesc">Visão consolidada do desempenho de satisfação e dos sinais prioritários da operação.</p></div>
+      <div class="topbar-right"><img class="swift-logo" src="./logo-swift-interna-1-_1661799767.png" alt="Swift"/></div>
+    </div>
+
+    <!-- ── FILTER BAR ── -->
+    <div class="filter-bar" id="filterBar">
+      <div class="fg"><label>De</label><input type="month" id="fFrom" value="2025-01" min="2025-01" max="2026-05"></div>
+      <div class="fg"><label>Até</label><input type="month" id="fTo" value="2026-05" min="2025-01" max="2026-05"></div>
+      <div class="filter-divider"></div>
+      <div class="fg">
+        <label>Gerente</label>
+        <div class="chip-group" id="flagChips">
+          <button class="chip active" data-flag="all">Todos</button>
+          <button class="chip" data-flag="regular">Regular</button>
+          <button class="chip" data-flag="tocador">Tocador</button>
+        </div>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="fg"><label>Região</label><select id="fRegion"><option value="">Todas</option><option>Capital</option><option>DF</option><option>GO</option><option>Interior</option><option>Litoral</option><option>RJ</option><option>RMSP</option></select></div>
+      <div class="fg"><label>Categoria</label><select id="fCat"><option value="">Todas</option><option>Atendimento Positivo</option><option>Preços e Experiência Geral</option><option>Qualidade dos Produtos</option><option>Operações da Loja</option><option>Canal Digital</option><option>Marca Swift</option><option>Elogios Gerais</option></select></div>
+      <div class="fg" id="clsFilterWrap" style="display:none;"><label>Classificação</label><select id="fCls"><option value="">Todas</option><option>Promotor</option><option>Neutro</option><option>Detrator</option></select></div>
+      <button class="filter-reset" id="fReset">Limpar</button>
+    </div>
+
+    <!-- ═══ P1: DASHBOARD EXECUTIVO ═══ -->
+    <section id="p1" class="page active">
+      <div class="g4">
+        <div class="card kpi"><h3>NPS geral</h3><div class="val c-brand" id="p1Nps">0.0</div><div class="desc">Índice consolidado da rede</div></div>
+        <div class="card kpi"><h3>Avaliações</h3><div class="val c-blue" id="p1Vol">228.4k</div><div class="desc">Base total analisada</div></div>
+        <div class="card kpi"><h3>Promotores</h3><div class="val c-green" id="p1Prom">37.8%</div><div class="desc">Maior grupo da base</div></div>
+        <div class="card kpi"><h3>Detratores</h3><div class="val c-red" id="p1Det">37.8%</div><div class="desc">Foco de investigação</div></div>
+      </div>
+      <div class="g21 mt">
+        <div class="card"><h3>NPS por mês</h3><canvas id="cP1Nps"></canvas></div>
+        <div class="card fill-card">
+          <h3>Distribuição (big numbers)</h3>
+          <div class="g2">
+            <div class="card kpi" style="padding:14px;"><h3>Promotores</h3><div class="val c-green" id="p1PromBig">37.8%</div></div>
+            <div class="card kpi" style="padding:14px;"><h3>Neutros</h3><div class="val c-yellow" id="p1NeuBig">24.3%</div></div>
+          </div>
+          <div class="g2 mt">
+            <div class="card kpi" style="padding:14px;"><h3>Detratores</h3><div class="val c-red" id="p1DetBig">37.8%</div></div>
+            <div class="card kpi" style="padding:14px;"><h3>NPS</h3><div class="val c-brand" id="p1NpsBig">0.0</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="g2 mt">
+        <div class="card">
+          <h3>Top 5 lojas por NPS</h3>
+          <table class="table"><thead><tr><th>#</th><th>Loja</th><th>NPS</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Vila Mariana</td><td class="c-green">84.2</td></tr>
+            <tr><td>2</td><td>Pinheiros</td><td class="c-green">82.8</td></tr>
+            <tr><td>3</td><td>Moema</td><td class="c-green">80.3</td></tr>
+            <tr><td>4</td><td>Campinas</td><td class="c-green">78.9</td></tr>
+            <tr><td>5</td><td>Alphaville</td><td class="c-green">78.1</td></tr>
+          </tbody></table>
+        </div>
+        <div class="card">
+          <h3>5 piores lojas por NPS</h3>
+          <table class="table"><thead><tr><th>#</th><th>Loja</th><th>NPS</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Tucuruvi</td><td class="c-red">28.3</td></tr>
+            <tr><td>2</td><td>Guarulhos</td><td class="c-red">31.0</td></tr>
+            <tr><td>3</td><td>Santo André</td><td class="c-red">33.7</td></tr>
+            <tr><td>4</td><td>Osasco</td><td class="c-red">35.2</td></tr>
+            <tr><td>5</td><td>Taboão</td><td class="c-red">37.4</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ P2: EVOLUÇÃO DO NPS ═══ -->
+    <section id="p2" class="page">
+      <div class="g2">
+        <div class="card"><h3>Evolução do NPS</h3><canvas id="cP2Nps" height="200"></canvas></div>
+        <div class="card"><h3>Volume de avaliações</h3><canvas id="cP2Vol" height="200" style="max-height:240px;"></canvas></div>
+      </div>
+      <div class="card mt">
+        <h3>Distribuição mensal — Promotor / Neutro / Detrator</h3>
+        <canvas id="cP2Stack" height="90"></canvas>
+      </div>
+    </section>
+
+    <!-- ═══ P3: COMPARAÇÃO GERENCIAL ═══ -->
+    <section id="p3" class="page">
+      <div class="g4">
+        <div class="card kpi"><h3>NPS Regular</h3><div class="val c-brand" id="p3Reg">11.8</div><div class="desc">Média no período</div></div>
+        <div class="card kpi"><h3>NPS Tocador</h3><div class="val c-blue" id="p3Toc">-10.0</div><div class="desc">Média no período</div></div>
+        <div class="card kpi"><h3>Gap</h3><div class="val c-red" id="p3Gap">21.8 pts</div><div class="desc">Diferença entre grupos</div></div>
+        <div class="card kpi"><h3>Volume crítico</h3><div class="val c-yellow">+18%</div><div class="desc">Mais detratores nas tocadores</div></div>
+      </div>
+      <div class="card mt"><h3>NPS mensal — Regular vs Tocador</h3><canvas id="cP3Flag" height="90"></canvas></div>
+      <div class="g2 mt">
+        <div class="card"><h3>Top melhores categorias — Regular</h3><table class="table" id="p3TopReg"></table></div>
+        <div class="card"><h3>Top piores categorias — Regular</h3><table class="table" id="p3BotReg"></table></div>
+      </div>
+      <div class="g2 mt">
+        <div class="card"><h3>Top melhores categorias — Tocador</h3><table class="table" id="p3TopToc"></table></div>
+        <div class="card"><h3>Top piores categorias — Tocador</h3><table class="table" id="p3BotToc"></table></div>
+      </div>
+    </section>
+
+    <!-- ═══ P4: SENTIMENTO E TEMAS ═══ -->
+    <section id="p4" class="page">
+      <div class="g2">
+        <div class="card fill-card">
+          <h3>Sentimento (big numbers)</h3>
+          <div class="g3">
+            <div class="card kpi" style="padding:14px;"><h3>Positivo</h3><div class="val c-green">73.0%</div><div class="desc">Clientes satisfeitos</div></div>
+            <div class="card kpi" style="padding:14px;"><h3>Neutro</h3><div class="val c-yellow">21.6%</div><div class="desc">Indiferentes</div></div>
+            <div class="card kpi" style="padding:14px;"><h3>Negativo</h3><div class="val c-red">5.4%</div><div class="desc">Insatisfeitos</div></div>
+          </div>
+        </div>
+        <div class="card"><h3>Temas mais citados (BERTopic)</h3><canvas id="cP4Topics" height="220"></canvas></div>
+      </div>
+      <div class="g2 mt">
+        <div class="card"><h3>Comprimento médio dos comentários</h3><canvas id="cP4Len" height="180"></canvas></div>
+        <div class="card">
+          <h3>Cobertura por classificação</h3>
+          <div style="margin-top:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:13px;"><span>Detratores</span><span class="c-red">37.8%</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:37.8%;background:var(--red)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;"><span>Neutros</span><span class="c-yellow">24.3%</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:24.3%;background:var(--yellow)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;"><span>Promotores</span><span class="c-green">37.8%</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:37.8%;background:var(--green)"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ P5: SAZONALIDADE ═══ -->
+    <section id="p5" class="page">
+      <div class="g4">
+        <div class="card kpi"><h3>Preços e Exp. Geral — Pico sazonal</h3><div class="val c-red">Jan–Mar</div><div class="desc"><span class="season-badge s-verao">Verão</span>Calor → experiência negativa percebida</div></div>
+        <div class="card kpi"><h3>Operações da Loja — Pico sazonal</h3><div class="val c-yellow">Nov–Dez</div><div class="desc"><span class="season-badge s-fimano">Fim de ano</span>Demanda alta → filas e atrasos</div></div>
+        <div class="card kpi"><h3>Qualidade dos Produtos — Pico sazonal</h3><div class="val c-blue">Abr–Jun</div><div class="desc"><span class="season-badge s-outono">Outono</span>Transição → frescor e validade</div></div>
+        <div class="card kpi"><h3>Atendimento Positivo — Pico sazonal</h3><div class="val c-yellow">Nov–Dez</div><div class="desc"><span class="season-badge s-fimano">Fim de ano</span>Equipe sobrecarregada</div></div>
+      </div>
+      <div class="card mt"><h3>Volume de comentários por categoria ao longo do tempo</h3><canvas id="cP5Cats" height="110"></canvas></div>
+      <div class="g2 mt">
+        <div class="card fill-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3 style="margin:0;">Distribuição por estação</h3>
+            <select id="estClsFilter" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:6px 10px;font-size:12px;outline:none;">
+              <option value="">Todos</option>
+              <option value="Promotor">Promotor</option>
+              <option value="Neutro">Neutro</option>
+              <option value="Detrator">Detrator</option>
+            </select>
+          </div>
+          <canvas id="cP5Est" height="230" style="flex:1;"></canvas>
+        </div>
+        <div class="card">
+          <h3>Filtro de classificação ativo: <span id="p5ClsLabel" style="color:var(--brand);">Todos</span></h3>
+          <p style="color:var(--muted);font-size:13px;line-height:1.7;margin:0;">Use o filtro <b>Classificação</b> na barra acima para ver como a distribuição de temas muda para Promotores, Neutros ou Detratores.</p>
+          <div class="topic mt"><span class="season-badge s-verao">Verão (Jan–Mar)</span><strong>Preços e experiência negativa</strong><br><small>Calor intenso amplifica percepção de custo-benefício negativo e experiência ruim na loja.</small></div>
+          <div class="topic"><span class="season-badge s-outono">Outono (Abr–Jun)</span><strong>Qualidade dos produtos em foco</strong><br><small>Transição de temperatura afeta frescor de carnes, laticínios e frutas — mais comentários sobre validade.</small></div>
+          <div class="topic"><span class="season-badge s-inverno">Inverno (Jul–Set)</span><strong>Melhor desempenho geral</strong><br><small>NPS tende a subir 4–6 pts. Volume de comentários negativos reduz em todas as categorias.</small></div>
+          <div class="topic"><span class="season-badge s-fimano">Fim de ano (Out–Dez)</span><strong>Operações e atendimento sob pressão</strong><br><small>Natal/Réveillon → filas, falta de produto, equipe sobrecarregada — pico de Operações da Loja.</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ P6: COMENTÁRIOS POR LOJA ═══ -->
+    <section id="p6" class="page">
+      <div class="g4" style="margin-bottom:16px;">
+        <div class="card">
+          <h3>Loja</h3>
+          <select id="storeSelect" style="width:100%;background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px;outline:none;">
+            <option value="">Todas as lojas</option>
+            <option value="vila">Vila Mariana</option>
+            <option value="pin">Pinheiros</option>
+            <option value="moe">Moema</option>
+            <option value="tuc">Tucuruvi</option>
+            <option value="gua">Guarulhos</option>
+          </select>
+        </div>
+        <div class="card kpi"><h3>NPS (nota original)</h3><div class="val c-brand" id="p6OldNps">—</div></div>
+        <div class="card kpi"><h3>NPS (reclassificado)</h3><div class="val c-brand" id="p6NewNps">—</div></div>
+        <div class="card kpi"><h3>Divergentes (total)</h3><div class="val c-red" id="p6Div">—</div><div class="desc">% do total</div></div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <h3>Sankey — nota original → reclassificação por texto</h3>
+          <div id="p6Sankey" style="width:100%;overflow:auto;padding:8px 0;"></div>
+        </div>
+        <div class="card fill-card">
+          <h3>Divergência individual por classe (big numbers)</h3>
+          <div class="g3">
+            <div class="card kpi" style="padding:14px;"><h3>Promotor divergente</h3><div class="val c-red" id="p6DivP">—</div><div class="desc">Nota alta, texto negativo</div></div>
+            <div class="card kpi" style="padding:14px;"><h3>Neutro divergente</h3><div class="val c-yellow" id="p6DivN">—</div><div class="desc">Discordância texto×nota</div></div>
+            <div class="card kpi" style="padding:14px;"><h3>Detrator divergente</h3><div class="val c-red" id="p6DivD">—</div><div class="desc">Nota baixa, texto positivo</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt">
+        <h3>Comentários — filtros funcionais</h3>
+        <div class="filter-bar" style="margin:0 0 14px;">
+          <div class="fg"><label>Categoria</label><select id="cCat"><option value="">Todas</option><option>Atendimento Positivo</option><option>Preços e Experiência Geral</option><option>Qualidade dos Produtos</option><option>Operações da Loja</option><option>Canal Digital</option><option>Marca Swift</option><option>Elogios Gerais</option></select></div>
+          <div class="fg"><label>Classificação</label><select id="cCls"><option value="">Todas</option><option>Promotor</option><option>Neutro</option><option>Detrator</option></select></div>
+          <button class="filter-reset" id="cReset">Limpar</button>
+        </div>
+        <div id="commentList"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ────────────────────────────────── AUTH ── */
+const SESSION_KEY='swift_v2_admin';
+function showLogin(){ document.getElementById('loginView').style.display=''; document.getElementById('appView').style.display='none'; }
+function showApp(){   document.getElementById('loginView').style.display='none'; document.getElementById('appView').style.display='grid'; }
+if(localStorage.getItem(SESSION_KEY)==='1') showApp(); else showLogin();
+
+document.getElementById('loginBtn').onclick=()=>{
+  const u=document.getElementById('lu').value.trim();
+  const pw=document.getElementById('lp').value.trim();
+  if(u==='admin'&&pw==='admin'){ localStorage.setItem(SESSION_KEY,'1'); showApp(); renderAll(); }
+  else alert('Login inválido — use admin/admin');
+};
+document.getElementById('logoutBtn').onclick=()=>{ localStorage.removeItem(SESSION_KEY); location.reload(); };
+
+/* ────────────────────────────────── THEME ── */
+const themeToggle=document.getElementById('themeToggle');
+const themeLabel=document.getElementById('themeLabel');
+let isDark=false;
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', isDark?'dark':'light');
+  themeToggle.classList.toggle('on', isDark);
+  themeLabel.textContent=isDark?'Modo escuro':'Modo claro';
+  updateDefaults(); renderCharts();
+}
+themeToggle.onclick=()=>{ isDark=!isDark; applyTheme(); };
+
+/* ────────────────────────────────── SIDEBAR ── */
+const appEl=document.getElementById('appView');
+document.getElementById('sbToggle').onclick=()=>{ appEl.classList.toggle('collapsed'); };
+
+/* ────────────────────────────────── NAV ── */
+const pageMeta={
+  p1:['Dashboard Executivo','Visão consolidada do desempenho de satisfação e dos sinais prioritários da operação.'],
+  p2:['Evolução do NPS','Leitura temporal da nota, volume e distribuição.'],
+  p3:['Comparação Gerencial','NPS mensal, melhores/piores categorias por grupo gerencial.'],
+  p4:['Sentimento e Temas','Distribuição de sentimento e temas mais citados.'],
+  p5:['Sazonalidade','Problemas por período do ano — com filtro de classificação.'],
+  p6:['Comentários por Loja','Sankey, divergência individual e comentários com filtros funcionais.'],
+};
+document.querySelectorAll('.menu button').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.page).classList.add('active');
+    document.getElementById('pageTitle').textContent=pageMeta[btn.dataset.page][0];
+    document.getElementById('pageDesc').textContent=pageMeta[btn.dataset.page][1];
+    const showCls=false;
+    document.getElementById('clsFilterWrap').style.display=showCls?'flex':'none';
+    if(btn.dataset.page==='p6') renderComments();
+  };
+});
+
+/* ────────────────────────────────── DADOS MOCK ── */
+const months=['Jan/25','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez/25','Jan/26','Fev','Mar','Abr','Mai/26'];
+const monthKeys=['2025-01','2025-02','2025-03','2025-04','2025-05','2025-06','2025-07','2025-08','2025-09','2025-10','2025-11','2025-12','2026-01','2026-02','2026-03','2026-04','2026-05'];
+const npsAll=[34,36,37,39,38,40,40,40,43,44,44,46,46,45,48,49,50];
+const volAll=[12,14,13,15,16,18,19,17,20,22,21,23,25,22,26,28,30];
+const promAll=[55,56,56,57,57,58,58,57,59,60,59,61,61,60,62,63,64];
+const neutAll=[24,24,25,25,24,24,24,26,25,24,26,24,24,25,24,23,22];
+const detAll =[21,20,19,18,19,18,18,17,16,16,15,15,15,15,14,14,14];
+const npsReg =[42,44,45,47,46,49,50,48,51,53,52,54,55,53,56,57,58];
+const npsToc =[22,24,25,27,26,29,30,28,31,33,32,34,35,33,36,37,38];
+
+const catData={
+  regular:{ top:[['Atendimento Positivo',84],['Qualidade dos Produtos',86],['Preços e Experiência Geral',70]], bot:[['Operações da Loja',42],['Canal Digital',51],['Marca Swift',55]] },
+  tocador:{ top:[['Qualidade dos Produtos',82],['Atendimento Positivo',80],['Preços e Experiência Geral',63]], bot:[['Operações da Loja',38],['Canal Digital',47],['Marca Swift',50]] }
+};
+
+const catSeries={
+  'Atendimento Positivo': [18,19,17,16,15,14,13,14,15,16,18,22,17,16,17,15,14],
+  'Preços e Experiência Geral': [14,16,18,13,11,10,8,9,10,11,13,20,16,18,19,12,11],
+  'Qualidade dos Produtos': [10,11,12,15,14,12,11,12,13,12,11,13,12,14,13,12,11],
+  'Operações da Loja': [8,9,8,7,8,8,7,8,9,14,18,24,10,9,9,11,13],
+  'Canal Digital': [3,4,3,4,4,3,3,4,4,5,5,6,4,5,5,4,4],
+  'Marca Swift': [4,4,3,4,4,3,3,3,4,4,4,5,4,4,4,3,3],
+};
+const estLabels=['Verão','Outono','Inverno','Fim de Ano'];
+const estData={'Atendimento Positivo':[18,15,14,20],'Preços e Experiência Geral':[18,11,9,17],'Qualidade dos Produtos':[11,14,12,12],'Operações da Loja':[8,8,8,18]};
+const estDataByCls={
+  Promotor:{'Atendimento Positivo':[10,9,8,11],'Preços e Experiência Geral':[8,5,4,7],'Qualidade dos Produtos':[6,8,7,7],'Operações da Loja':[3,3,3,6]},
+  Neutro:  {'Atendimento Positivo':[4,3,3,5], 'Preços e Experiência Geral':[5,3,3,5], 'Qualidade dos Produtos':[3,4,3,3],'Operações da Loja':[2,2,2,5]},
+  Detrator:{'Atendimento Positivo':[4,3,3,4], 'Preços e Experiência Geral':[5,3,2,5], 'Qualidade dos Produtos':[2,2,2,2],'Operações da Loja':[3,3,3,7]}
+};
+
+const storeDB={
+  vila:{label:'Vila Mariana',region:'Capital',flag:'regular',oldNps:10.0,newNps:70.0,old:{P:40,N:30,D:30},new:{Pos:80,Neu:10,Neg:10},comments:[
+    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Atendimento excelente, loja bem organizada e equipe muito prestativa.'},
+    {cls:'Neutro',rec:'Positivo',cat:'Canal Digital',txt:'Loja ok, mas faltavam alguns itens que eu procurava.'},
+    {cls:'Detrator',rec:'Positivo',cat:'Operações da Loja',txt:'Fila grande e atendimento frio. Muito calor dentro.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Canal Digital',txt:'Nota 9, mas a loja estava bagunçada e faltou produto no açougue.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Produtos sempre frescos, muito bom.'},
+    {cls:'Neutro',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Achei o atendimento ok, nada excepcional.'},
+    {cls:'Detrator',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Nota 3 mas na real a loja é boa, preço justo.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Entrega rápida e sem problemas.'},
+    {cls:'Detrator',rec:'Neutro',cat:'Atendimento Positivo',txt:'Pedido atrasou 3 dias.'},
+    {cls:'Neutro',rec:'Negativo',cat:'Atendimento Positivo',txt:'Estacionamento péssimo, quase fui embora.'}
+  ]},
+  pin:{label:'Pinheiros',region:'RMSP',flag:'regular',oldNps:14.3,newNps:71.4,old:{P:43,N:29,D:29},new:{Pos:71,Neu:29,Neg:0},comments:[
+    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Equipe educada e muito rápida.'},
+    {cls:'Detrator',rec:'Neutro',cat:'Atendimento Positivo',txt:'Demora na retirada e confusão no balcão.'},
+    {cls:'Neutro',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Achei alguns itens um pouco caros.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Nota 10, mas o ar condicionado estava quebrado.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Variedade excelente de produtos orgânicos.'},
+    {cls:'Detrator',rec:'Neutro',cat:'Atendimento Positivo',txt:'Funcionário foi grosso comigo.'},
+    {cls:'Neutro',rec:'Positivo',cat:'Atendimento Positivo',txt:'App funciona bem, mas a loja é mediana.'}
+  ]},
+  moe:{label:'Moema',region:'RMSP',flag:'tocador',oldNps:16.7,newNps:83.3,old:{P:50,N:17,D:33},new:{Pos:83,Neu:17,Neg:0},comments:[
+    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Boa variedade e produtos frescos.'},
+    {cls:'Detrator',rec:'Neutro',cat:'Operações da Loja',txt:'Loja apertada e fila grande no fim da tarde.'},
+    {cls:'Neutro',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Preços acima da média da região.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Nota 9, mas a entrega atrasou 2 vezes.'},
+    {cls:'Detrator',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Nota 2 mas confesso que o atendimento foi bom.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Equipe muito atenciosa.'}
+  ]},
+  tuc:{label:'Tucuruvi',region:'RMSP',flag:'tocador',oldNps:-25.0,newNps:50.0,old:{P:25,N:25,D:50},new:{Pos:62,Neu:25,Neg:12},comments:[
+    {cls:'Detrator',rec:'Neutro',cat:'Operações da Loja',txt:'Muito calor e fila desorganizada.'},
+    {cls:'Detrator',rec:'Positivo',cat:'Operações da Loja',txt:'Atendimento frio e sem orientação.'},
+    {cls:'Neutro',rec:'Neutro',cat:'Preços e Experiência Geral',txt:'Pouca opção e produto não parecia fresco.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Operações da Loja',txt:'Nota 9 mas a loja precisa de reforma urgente.'},
+    {cls:'Detrator',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'Caro demais pra qualidade oferecida.'},
+    {cls:'Neutro',rec:'Positivo',cat:'Atendimento Positivo',txt:'Site ok, nada especial.'},
+    {cls:'Detrator',rec:'Positivo',cat:'Atendimento Positivo',txt:'Nota 1 mas os produtos de marca própria são bons.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Frutas sempre frescas.'}
+  ]},
+  gua:{label:'Guarulhos',region:'Interior',flag:'tocador',oldNps:-16.7,newNps:66.7,old:{P:33,N:17,D:50},new:{Pos:67,Neu:33,Neg:0},comments:[
+    {cls:'Detrator',rec:'Neutro',cat:'Operações da Loja',txt:'Demora enorme na retirada e fila no caixa.'},
+    {cls:'Detrator',rec:'Positivo',cat:'Atendimento Positivo',txt:'Faltavam produtos básicos.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'O gerente é muito simpático.'},
+    {cls:'Neutro',rec:'Neutro',cat:'Operações da Loja',txt:'Loja suja e mal iluminada.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Nota 10 mas os preços subiram muito.'},
+    {cls:'Detrator',rec:'Positivo',cat:'Atendimento Positivo',txt:'Esperamos 40 min para ser atendidos.'}
+  ]}
+};
+
+/* ────────────────────────────────── FILTROS ── */
+const filterState={from:'2025-01',to:'2026-05',flag:'all',region:'',cat:'',cls:''};
+
+document.getElementById('fFrom').onchange=e=>{filterState.from=e.target.value; renderAll();};
+document.getElementById('fTo').onchange=e=>{filterState.to=e.target.value; renderAll();};
+document.getElementById('fRegion').onchange=e=>{filterState.region=e.target.value; renderAll();};
+document.getElementById('fCat').onchange=e=>{filterState.cat=e.target.value; renderAll();};
+document.getElementById('fCls').onchange=e=>{filterState.cls=e.target.value; renderAll();};
+document.querySelectorAll('#flagChips .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#flagChips .chip').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active'); filterState.flag=c.dataset.flag; renderAll();
+});
+document.getElementById('fReset').onclick=()=>{
+  filterState.from='2025-01'; filterState.to='2026-05'; filterState.flag='all'; filterState.region=''; filterState.cat=''; filterState.cls='';
+  document.getElementById('fFrom').value='2025-01'; document.getElementById('fTo').value='2026-05';
+  document.getElementById('fCat').value=''; document.getElementById('fCls').value=''; document.getElementById('fRegion').value='';
+  document.querySelectorAll('#flagChips .chip').forEach(x=>x.classList.remove('active'));
+  document.querySelector('#flagChips .chip[data-flag="all"]').classList.add('active');
+  document.getElementById('p5ClsLabel').textContent='Todos';
+  renderAll();
+};
+
+document.getElementById('storeSelect').onchange=renderComments;
+document.getElementById('cCat').onchange=renderComments;
+document.getElementById('cCls').onchange=renderComments;
+document.getElementById('cReset').onclick=()=>{document.getElementById('cCat').value='';document.getElementById('cCls').value='';renderComments();};
+document.getElementById('estClsFilter').onchange=()=>{renderCharts();};
+
+/* ────────────────────────────────── FILTER HELPERS ── */
+function getDateRange(){
+  const a=monthKeys.indexOf(filterState.from), b=monthKeys.indexOf(filterState.to);
+  const from=Math.max(0,Math.min(a,b)), to=Math.min(monthKeys.length-1,Math.max(a,b));
+  return {from,to};
+}
+function sliceByDate(arr){ const {from,to}=getDateRange(); return arr.slice(from,to+1); }
+function getLabels(){ return sliceByDate(months); }
+
+function applyFilters(data){
+  let out=sliceByDate(data);
+  if(filterState.region){
+    const m={Capital:1.03,DF:0.98,GO:0.96,Interior:0.97,Litoral:1.01,RJ:0.99,RMSP:1.02}[filterState.region]||1;
+    out=out.map(v=>Math.round(v*m));
+  }
+  if(filterState.cls){
+    const m={Promotor:0.8,Neutro:1.0,Detrator:1.2}[filterState.cls]||1;
+    out=out.map(v=>Math.round(v*m));
+  }
+  return out;
+}
+
+/* ────────────────────────────────── CHARTS ── */
+const charts={};
+function tc(){return getComputedStyle(document.documentElement).getPropertyValue('--text').trim();}
+function mc(){return getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();}
+function gc(){return isDark?'rgba(255,255,255,.07)':'rgba(0,0,0,.07)';}
+function br(){return getComputedStyle(document.documentElement).getPropertyValue('--brand').trim();}
+function updateDefaults(){ Chart.register(ChartDataLabels); Chart.defaults.color=mc(); Chart.defaults.borderColor=gc(); Chart.defaults.font.family='Inter'; Chart.defaults.plugins.datalabels={display:false}; }
+updateDefaults();
+function mk(id,cfg){ if(charts[id]) charts[id].destroy(); const el=document.getElementById(id); if(el) charts[id]=new Chart(el,cfg); }
+
+function catColors(){return {'Atendimento Positivo':'#f28c28','Preços e Experiência Geral':'#e74c3c','Qualidade dos Produtos':'#5b8def','Operações da Loja':'#f1c40f','Canal Digital':'#9b59b6','Marca Swift':'#2ecc71','Elogios Gerais':'#1abc9c'};}
+
+function flagSeries(){
+  const labels=getLabels();
+  const reg={label:'Regular',data:applyFilters(npsReg),borderColor:br(),backgroundColor:'rgba(242,140,40,.12)',fill:true,tension:.35,pointRadius:2};
+  const toc={label:'Tocador',data:applyFilters(npsToc),borderColor:getComputedStyle(document.documentElement).getPropertyValue('--blue').trim(),backgroundColor:'rgba(91,141,239,.10)',fill:true,tension:.35,pointRadius:2};
+  if(filterState.flag==='regular') return [reg];
+  if(filterState.flag==='tocador') return [toc];
+  return [reg,toc];
+}
+
+function renderCharts(){
+  const labels=getLabels();
+  const base=filterState.flag==='regular'?npsReg:filterState.flag==='tocador'?npsToc:npsAll;
+
+  mk('cP1Nps',{type:'line',data:{labels,datasets:[{data:applyFilters(base),borderColor:br(),backgroundColor:'rgba(242,140,40,.14)',fill:true,tension:.38,pointRadius:3}]},options:{aspectRatio:3.5,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:0,max:70,grid:{color:gc()},ticks:{color:mc()}}}}});
+  mk('cP2Nps',{type:'line',data:{labels,datasets:[{label:'NPS',data:applyFilters(base),borderColor:br(),backgroundColor:'rgba(242,140,40,.14)',fill:true,tension:.38,pointRadius:3}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:0,max:70,grid:{color:gc()},ticks:{color:mc()}}}}});
+  mk('cP2Vol',{type:'bar',data:{labels,datasets:[{data:applyFilters(volAll),backgroundColor:br(),borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{grid:{color:gc()},ticks:{color:mc()}}}}});
+  mk('cP2Stack',{type:'bar',data:{labels,datasets:[{label:'Promotores',data:applyFilters(promAll),backgroundColor:'#2ecc71',borderRadius:2},{label:'Neutros',data:applyFilters(neutAll),backgroundColor:'#f1c40f',borderRadius:2},{label:'Detratores',data:applyFilters(detAll),backgroundColor:'#e74c3c',borderRadius:2}]},options:{plugins:{legend:{labels:{color:tc()}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>=6;},color:'#fff',font:{size:10,weight:'700'},formatter:function(v){return v+'%';},anchor:'center',align:'center',clamp:true}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{stacked:true,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
+  mk('cP3Flag',{type:'line',data:{labels,datasets:flagSeries()},options:{plugins:{legend:{labels:{color:tc()}}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:0,max:70,grid:{color:gc()},ticks:{color:mc()}}}}});
+  mk('cP4Topics',{type:'bar',data:{labels:['Atendimento Positivo','Preços e Exp. Geral','Qualidade dos Produtos','Operações da Loja','Canal Digital','Marca Swift','Elogios Gerais'],datasets:[{data:[10193,11395,7708,2391,1193,1568,462],backgroundColor:['#f28c28','#e74c3c','#5b8def','#f1c40f','#9b59b6','#2ecc71','#1abc9c'],borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{grid:{color:gc()},ticks:{color:mc()}},y:{grid:{display:false},ticks:{color:tc()}}}}});
+  mk('cP4Len',{type:'bar',data:{labels:['Detrator','Neutro','Promotor'],datasets:[{data:[18.4,11.2,8.7],backgroundColor:['#e74c3c','#f1c40f','#2ecc71'],borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:tc()}},y:{grid:{color:gc()},ticks:{color:mc()}}}}});
+
+  const cc=catColors();
+  const catDS=Object.entries(catSeries).map(([k,v])=>({label:k,data:applyFilters(v),borderColor:cc[k]||br(),backgroundColor:'transparent',tension:.35,fill:false,pointRadius:2,borderWidth:2}));
+  mk('cP5Cats',{type:'line',data:{labels,datasets:catDS},options:{plugins:{legend:{labels:{color:tc(),boxWidth:12}}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{grid:{color:gc()},ticks:{color:mc()}}}}});
+
+  const estClsVal=document.getElementById('estClsFilter')?document.getElementById('estClsFilter').value:'';
+  const estSource=estClsVal&&estDataByCls[estClsVal]?estDataByCls[estClsVal]:estData;
+  const estDS=Object.entries(estSource).map(([k,v])=>({label:k,data:v,backgroundColor:cc[k]||br(),borderRadius:4}));
+  mk('cP5Est',{type:'bar',data:{labels:estLabels,datasets:estDS},options:{plugins:{legend:{labels:{color:tc()}}},scales:{x:{grid:{display:false},ticks:{color:tc()}},y:{grid:{color:gc()},ticks:{color:mc()}}}}});
+}
+
+/* ────────────────────────────────── TABELAS ── */
+function renderTable(elId, rows, mode){
+  const el=document.getElementById(elId);
+  const cls=mode==='top'?'c-green':mode==='bot'?'c-red':'';
+  el.innerHTML='<thead><tr><th>Categoria</th><th>NPS</th></tr></thead><tbody>'+
+    rows.map(([c,v])=>'<tr><td>'+c+'</td><td class="'+cls+'"><b>'+v+'</b></td></tr>').join('')+'</tbody>';
+}
+
+/* ────────────────────────────────── SANKEY ── */
+function buildSankey(od, nd){
+  // margens laterais generosas para os labels não serem cortados
+  const W=640, PAD=16, BAR=28, GAP=12, LABEL_W=140;
+  const lx=PAD+LABEL_W;   // x centro da barra esquerda
+  const rx=W-PAD-LABEL_W; // x centro da barra direita
+
+  const nodesL=[{k:'Promotor',v:od.P,c:'#2ecc71'},{k:'Neutro',v:od.N,c:'#f1c40f'},{k:'Detrator',v:od.D,c:'#e74c3c'}];
+  const nodesR=[{k:'Positivo',v:nd.Pos,c:'#2ecc71'},{k:'Neutro',v:nd.Neu,c:'#f1c40f'},{k:'Negativo',v:nd.Neg,c:'#e74c3c'}];
+
+  // Altura proporcional: cada % vale `scale` px; gaps fixos entre nós
+  const SCALE=2.2; // px por ponto percentual
+  function totalH(nodes){ return nodes.reduce((s,n)=>s+n.v*SCALE,0)+(nodes.length-1)*GAP; }
+  const H=Math.max(totalH(nodesL), totalH(nodesR))+PAD*2;
+
+  function lay(nodes){
+    let y=PAD;
+    return nodes.map(n=>{
+      const hh=Math.max(4, n.v*SCALE);
+      const r={...n,y,hh};
+      y+=hh+GAP;
+      return r;
+    });
+  }
+  const L=lay(nodesL), R=lay(nodesR);
+
+  // Fluxos entre nós (proporcional ao produto das duas porcentagens)
+  const flows=[];
+  for(const a of L) for(const b of R){
+    const v=(a.v*b.v)/100;
+    if(v>0.5) flows.push({a,b,v});
+  }
+
+  const paths=flows.map(f=>{
+    const y1=f.a.y+f.a.hh/2, y2=f.b.y+f.b.hh/2;
+    const ctrl=(rx-lx)*0.45;
+    const sw=Math.max(2, f.v*SCALE*0.32);
+    return '<path d="M '+(lx+BAR/2)+' '+y1+' C '+(lx+BAR/2+ctrl)+' '+y1+','+(rx-BAR/2-ctrl)+' '+y2+','+(rx-BAR/2)+' '+y2+'" stroke="'+f.a.c+'" stroke-opacity=".25" stroke-width="'+sw+'" fill="none"/>';
+  }).join('');
+
+  const rectsL=L.map(n=>{
+    const bx=lx-BAR/2, tx=lx+BAR/2+8, ty=n.y+n.hh/2+5;
+    return '<rect x="'+bx+'" y="'+n.y+'" width="'+BAR+'" height="'+n.hh+'" rx="7" fill="'+n.c+'"/>'
+          +'<text x="'+tx+'" y="'+ty+'" font-size="13" font-weight="700" fill="'+tc()+'">'+n.k+' ('+n.v+'%)</text>';
+  }).join('');
+
+  const rectsR=R.map(n=>{
+    const bx=rx-BAR/2, tx=rx-BAR/2-8, ty=n.y+n.hh/2+5;
+    return '<rect x="'+bx+'" y="'+n.y+'" width="'+BAR+'" height="'+n.hh+'" rx="7" fill="'+n.c+'"/>'
+          +'<text text-anchor="end" x="'+tx+'" y="'+ty+'" font-size="13" font-weight="700" fill="'+tc()+'">'+n.k+' ('+n.v+'%)</text>';
+  }).join('');
+
+  return '<svg width="100%" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="display:block;">'+paths+rectsL+rectsR+'</svg>';
+}
+
+/* ────────────────────────────────── COMENTÁRIOS ── */
+function isDivergent(x){
+  return (x.cls==='Promotor'&&x.rec!=='Positivo')||(x.cls==='Detrator'&&x.rec!=='Negativo')||(x.cls==='Neutro'&&x.rec!=='Neutro');
+}
+
+function computeSankey(comments){
+  // Calcula distribuição real a partir dos comentários
+  const total=comments.length; if(!total) return null;
+  const P=comments.filter(x=>x.cls==='Promotor').length;
+  const N=comments.filter(x=>x.cls==='Neutro').length;
+  const D=comments.filter(x=>x.cls==='Detrator').length;
+  const Pos=comments.filter(x=>x.rec==='Positivo').length;
+  const Neu=comments.filter(x=>x.rec==='Neutro').length;
+  const Neg=comments.filter(x=>x.rec==='Negativo').length;
+  return {
+    old:{P:Math.round(P/total*100),N:Math.round(N/total*100),D:Math.round(D/total*100)},
+    new:{Pos:Math.round(Pos/total*100),Neu:Math.round(Neu/total*100),Neg:Math.round(Neg/total*100)}
+  };
+}
+
+function renderComments(){
+  const storeSelectEl=document.getElementById('storeSelect');
+  const cCatEl=document.getElementById('cCat');
+  const cClsEl=document.getElementById('cCls');
+  const commentListEl=document.getElementById('commentList');
+  if(!storeSelectEl||!commentListEl) return; // P6 não montado ainda
+
+  const key=storeSelectEl.value;
+  const localCat=cCatEl?cCatEl.value:'';
+  const localCls=cClsEl?cClsEl.value:'';
+  // filtros locais têm prioridade; se vazios, usa o global
+  const cat=localCat||filterState.cat;
+  const cls=localCls||filterState.cls;
+
+  // ── montar lista base de comentários ──
+  let comments=[];
+  if(!key){
+    // todas as lojas, respeita filtros globais de flag e região
+    let stores=Object.values(storeDB);
+    if(filterState.flag&&filterState.flag!=='all') stores=stores.filter(s=>s.flag===filterState.flag);
+    if(filterState.region) stores=stores.filter(s=>s.region===filterState.region);
+    comments=stores.flatMap(s=>s.comments.map(c=>({...c,store:s.label})));
+  } else {
+    const s=storeDB[key]; if(!s) return;
+    comments=s.comments.map(c=>({...c,store:''})); // sem badge de loja quando selecionada
+  }
+
+  // ── filtros de categoria e classificação ──
+  let baseComments=comments;
+  if(cat) baseComments=baseComments.filter(x=>x.cat===cat);
+
+  // ── métricas do painel P6 ──
+  const total=baseComments.length;
+  if(total>0){
+    const divTotal=baseComments.filter(isDivergent).length;
+    document.getElementById('p6Div').textContent=(divTotal/total*100).toFixed(1)+'%';
+    function rate(grp,check){const g=baseComments.filter(x=>x.cls===grp);return g.length?((g.filter(check).length/g.length*100).toFixed(1)+'%'):'—';}
+    document.getElementById('p6DivP').textContent=rate('Promotor',x=>x.rec!=='Positivo');
+    document.getElementById('p6DivN').textContent=rate('Neutro',x=>x.rec!=='Neutro');
+    document.getElementById('p6DivD').textContent=rate('Detrator',x=>x.rec!=='Negativo');
+
+    const prom=baseComments.filter(x=>x.cls==='Promotor').length;
+    const det =baseComments.filter(x=>x.cls==='Detrator').length;
+    const npsCalc=Math.round((prom-det)/total*100);
+    document.getElementById('p6OldNps').textContent=key?storeDB[key].oldNps:npsCalc;
+    document.getElementById('p6NewNps').textContent=key?storeDB[key].newNps:npsCalc;
+
+    const sk=computeSankey(baseComments);
+    if(sk) document.getElementById('p6Sankey').innerHTML=buildSankey(sk.old,sk.new);
+  } else {
+    ['p6OldNps','p6NewNps','p6Div','p6DivP','p6DivN','p6DivD'].forEach(id=>{ document.getElementById(id).textContent='—'; });
+    document.getElementById('p6Sankey').innerHTML='<div style="color:var(--muted);text-align:center;padding:30px;">Sem dados para os filtros selecionados</div>';
+  }
+
+  // ── lista de comentários (aplica filtro de cls por cima) ──
+  const filtered=baseComments.filter(x=>!cls||x.cls===cls);
+  const colorMap={Promotor:'var(--green)',Neutro:'var(--yellow)',Detrator:'var(--red)'};
+  commentListEl.innerHTML=filtered.length
+    ? filtered.map(x=>{
+        const storeBadge=x.store?`<span class="badge" style="border-color:var(--border);color:var(--muted)">${x.store}</span>`:'';
+        const clsColor=colorMap[x.cls]||'var(--border)';
+        const recClass=x.rec==='Positivo'?'green':x.rec==='Neutro'?'yellow':'red';
+        return `<div class="comment"><div style="margin-bottom:8px;">${storeBadge}<span class="badge" style="border-color:${clsColor};color:${clsColor}">${x.cls}</span><span class="badge b-${recClass}">Reclass.: ${x.rec}</span><span class="badge">${x.cat}</span></div><div style="color:var(--text);line-height:1.65;">${x.txt}</div></div>`;
+      }).join('')
+    : '<div class="topic"><strong>Nenhum comentário</strong><br><small>Ajuste os filtros ou selecione outra loja.</small></div>';
+}
+
+/* ────────────────────────────────── RENDER ALL ── */
+function renderAll(){
+  const g=filterState.flag;
+  renderTable('p3TopReg', g==='tocador'?catData.tocador.top:catData.regular.top, 'top');
+  renderTable('p3BotReg', g==='tocador'?catData.tocador.bot:catData.regular.bot, 'bot');
+  renderTable('p3TopToc', catData.tocador.top, 'top');
+  renderTable('p3BotToc', catData.tocador.bot, 'bot');
+
+  // ── Série base conforme flag selecionado (mesma lógica do gráfico) ──
+  const baseSeries = g==='regular'?npsReg : g==='tocador'?npsToc : npsAll;
+  const filteredSeries = applyFilters(baseSeries);
+  const npsAvg = filteredSeries.length
+    ? (filteredSeries.reduce((a,b)=>a+b,0)/filteredSeries.length).toFixed(1)
+    : '—';
+
+  // ── Promotores/Detratores/Neutros via comentários filtrados ──
+  let allComms=Object.values(storeDB).flatMap(s=>s.comments.map(c=>({...c,flag:s.flag,region:s.region})));
+  if(g&&g!=='all')           allComms=allComms.filter(c=>c.flag===g);
+  if(filterState.region)     allComms=allComms.filter(c=>c.region===filterState.region);
+  if(filterState.cat)        allComms=allComms.filter(c=>c.cat===filterState.cat);
+  if(filterState.cls)        allComms=allComms.filter(c=>c.cls===filterState.cls);
+
+  const total=allComms.length||1;
+  const nProm=allComms.filter(c=>c.cls==='Promotor').length;
+  const nNeu =allComms.filter(c=>c.cls==='Neutro').length;
+  const nDet =allComms.filter(c=>c.cls==='Detrator').length;
+  const promPct=(nProm/total*100).toFixed(1);
+  const neuPct =(nNeu /total*100).toFixed(1);
+  const detPct =(nDet /total*100).toFixed(1);
+
+  // P1 KPIs — NPS vem da série mensal (consistente com o gráfico); Prom/Neu/Det dos comentários
+  document.getElementById('p1Nps').textContent=npsAvg;
+  document.getElementById('p1NpsBig').textContent=npsAvg;
+  document.getElementById('p1Prom').textContent=promPct+'%';
+  document.getElementById('p1Det').textContent=detPct+'%';
+  document.getElementById('p1PromBig').textContent=promPct+'%';
+  document.getElementById('p1NeuBig').textContent=neuPct+'%';
+  document.getElementById('p1DetBig').textContent=detPct+'%';
+
+  // P3 KPIs
+  const regF=applyFilters(npsReg), tocF=applyFilters(npsToc);
+  const regAvg=regF.length?(regF.reduce((a,b)=>a+b,0)/regF.length).toFixed(1):0;
+  const tocAvg=tocF.length?(tocF.reduce((a,b)=>a+b,0)/tocF.length).toFixed(1):0;
+  document.getElementById('p3Reg').textContent=regAvg;
+  document.getElementById('p3Toc').textContent=tocAvg;
+  document.getElementById('p3Gap').textContent=(regAvg-tocAvg).toFixed(1)+' pts';
+
+  // P4 KPIs — sentimento reclassificado pelo modelo
+  const nPos=allComms.filter(c=>c.rec==='Positivo').length;
+  const nNeuRec=allComms.filter(c=>c.rec==='Neutro').length;
+  const nNeg=allComms.filter(c=>c.rec==='Negativo').length;
+  document.querySelector('#p4 .val.c-green').textContent=(nPos/total*100).toFixed(1)+'%';
+  document.querySelector('#p4 .val.c-yellow').textContent=(nNeuRec/total*100).toFixed(1)+'%';
+  document.querySelector('#p4 .val.c-red').textContent=(nNeg/total*100).toFixed(1)+'%';
+
+  // P4 — cobertura por classificação (barras e spans de percentual)
+  const p4Fills=document.querySelectorAll('#p4 .bar-fill');
+  const p4BarPcts=[detPct, neuPct, promPct];
+  p4Fills.forEach((el,i)=>{ if(el) el.style.width=p4BarPcts[i]+'%'; });
+  const p4BarRows=document.querySelectorAll('#p4 .bar-track');
+  const p4BarLabels=[detPct+'%', neuPct+'%', promPct+'%'];
+  p4BarRows.forEach((track,i)=>{
+    const prev=track.previousElementSibling;
+    if(prev){ const span=prev.querySelector('span:last-child'); if(span) span.textContent=p4BarLabels[i]; }
+  });
+
+  // P5 — label de classificação ativo
+  document.getElementById('p5ClsLabel').textContent=filterState.cls||'Todos';
+
+  renderCharts();
+  renderComments();
+}
+
+// boot
+if(localStorage.getItem(SESSION_KEY)==='1'){ renderAll(); }
+</script>
+</body>
+</html>
