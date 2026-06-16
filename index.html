@@ -196,9 +196,9 @@
         <h1>Transforme comentários em decisão.</h1>
         <p>Análise de satisfação com Inteligência Artificial. Login de admin para acessar todas as telas.</p>
         <div class="login-stats">
-          <div class="mini-stat"><strong>0.0%%</strong><span>NPS geral</span></div>
-          <div class="mini-stat"><strong>228</strong><span>Lojas analisadas</span></div>
-          <div class="mini-stat"><strong>228k</strong><span>Avaliações</span></div>
+          <div class="mini-stat"><strong>63.92%</strong><span>NPS geral</span></div>
+          <div class="mini-stat"><strong>227</strong><span>Lojas analisadas</span></div>
+          <div class="mini-stat"><strong>239.898</strong><span>Avaliações</span></div>
         </div>
       </div>
       <div class="login-form">
@@ -263,7 +263,7 @@
       <div class="filter-divider"></div>
       <div class="fg"><label>Região</label><select id="fRegion"><option value="">Todas</option><option>Capital</option><option>DF</option><option>GO</option><option>Interior</option><option>Litoral</option><option>RJ</option><option>RMSP</option></select></div>
       <div class="fg"><label>Categoria</label><select id="fCat"><option value="">Todas</option><option>Atendimento Positivo</option><option>Preços e Experiência Geral</option><option>Qualidade dos Produtos</option><option>Operações da Loja</option><option>Canal Digital</option><option>Marca Swift</option><option>Elogios Gerais</option></select></div>
-      <div class="fg" id="clsFilterWrap" style="display:none;"><label>Classificação</label><select id="fCls"><option value="">Todas</option><option>Promotor</option><option>Neutro</option><option>Detrator</option></select></div>
+      <div class="fg"><label>Classificação</label><select id="fCls"><option value="">Todas</option><option>Promotor</option><option>Neutro</option><option>Detrator</option></select></div>
       <button class="filter-reset" id="fReset">Limpar</button>
     </div>
 
@@ -271,7 +271,7 @@
     <section id="p1" class="page active">
       <div class="g4">
         <div class="card kpi"><h3>NPS geral</h3><div class="val c-brand" id="p1Nps">0.0</div><div class="desc">Índice consolidado da rede</div></div>
-        <div class="card kpi"><h3>Avaliações</h3><div class="val c-blue" id="p1Vol">228.4k</div><div class="desc">Base total analisada</div></div>
+        <div class="card kpi"><h3>Avaliações</h3><div class="val c-blue" id="p1Vol">239.898</div><div class="desc">Base total analisada</div></div>
         <div class="card kpi"><h3>Promotores</h3><div class="val c-green" id="p1Prom">37.8%</div><div class="desc">Maior grupo da base</div></div>
         <div class="card kpi"><h3>Detratores</h3><div class="val c-red" id="p1Det">37.8%</div><div class="desc">Foco de investigação</div></div>
       </div>
@@ -293,23 +293,23 @@
         <div class="card">
           <h3>Top 5 lojas por NPS</h3>
           <table class="table"><thead><tr><th>#</th><th>Loja</th><th>NPS</th></tr></thead>
-          <tbody>
-            <tr><td>1</td><td>Vila Mariana</td><td class="c-green">84.2</td></tr>
-            <tr><td>2</td><td>Pinheiros</td><td class="c-green">82.8</td></tr>
-            <tr><td>3</td><td>Moema</td><td class="c-green">80.3</td></tr>
-            <tr><td>4</td><td>Campinas</td><td class="c-green">78.9</td></tr>
-            <tr><td>5</td><td>Alphaville</td><td class="c-green">78.1</td></tr>
+          <tbody id="p1TopTable">
+            <tr><td>1</td><td>Leme</td><td class="c-green">94.7</td></tr>
+            <tr><td>2</td><td>Mall Multi Germinare</td><td class="c-green">94.2</td></tr>
+            <tr><td>3</td><td>Presidente Prudente</td><td class="c-green">94.0</td></tr>
+            <tr><td>4</td><td>Pindamonhangaba</td><td class="c-green">93.9</td></tr>
+            <tr><td>5</td><td>Limeira</td><td class="c-green">93.8</td></tr>
           </tbody></table>
         </div>
         <div class="card">
           <h3>5 piores lojas por NPS</h3>
           <table class="table"><thead><tr><th>#</th><th>Loja</th><th>NPS</th></tr></thead>
-          <tbody>
-            <tr><td>1</td><td>Tucuruvi</td><td class="c-red">28.3</td></tr>
-            <tr><td>2</td><td>Guarulhos</td><td class="c-red">31.0</td></tr>
-            <tr><td>3</td><td>Santo André</td><td class="c-red">33.7</td></tr>
-            <tr><td>4</td><td>Osasco</td><td class="c-red">35.2</td></tr>
-            <tr><td>5</td><td>Taboão</td><td class="c-red">37.4</td></tr>
+          <tbody id="p1BotTable">
+            <tr><td>1</td><td>Klabin</td><td class="c-red">76.3</td></tr>
+            <tr><td>2</td><td>Villa Lobos</td><td class="c-red">78.7</td></tr>
+            <tr><td>3</td><td>Vila Mariana 2</td><td class="c-red">78.7</td></tr>
+            <tr><td>4</td><td>Leopoldina</td><td class="c-red">79.0</td></tr>
+            <tr><td>5</td><td>Vila Andrade</td><td class="c-red">79.2</td></tr>
           </tbody></table>
         </div>
       </div>
@@ -727,107 +727,183 @@ document.querySelectorAll('.menu button').forEach(btn=>{
     document.getElementById(btn.dataset.page).classList.add('active');
     document.getElementById('pageTitle').textContent=pageMeta[btn.dataset.page][0];
     document.getElementById('pageDesc').textContent=pageMeta[btn.dataset.page][1];
-    const showCls=false;
-    document.getElementById('clsFilterWrap').style.display=showCls?'flex':'none';
     if(btn.dataset.page==='p6') renderComments();
   };
 });
 
-/* ────────────────────────────────── DADOS MOCK ── */
+/* ────────────────────────────────── DADOS REAIS (bases xlsx) ── */
 const months=['Jan/25','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez/25','Jan/26','Fev','Mar','Abr','Mai/26'];
 const monthKeys=['2025-01','2025-02','2025-03','2025-04','2025-05','2025-06','2025-07','2025-08','2025-09','2025-10','2025-11','2025-12','2026-01','2026-02','2026-03','2026-04','2026-05'];
-const npsAll=[54.81,59.99,61.27,59.58,65.83,68.00,66.70,69.25,65.26,66.30,64.84,67.89,59.92,62.20,64.74,65.38,64.76];
-const volAll=[3.3,2.3,2.7,2.7,3.0,3.3,2.5,3.0,3.0,3.1,2.7,3.8,3.1,3.0,3.2,3.1,2.0];
-const promAll=[71,74,75,74,78,79,78,80,77,78,78,79,74,76,77,77,77];
-const neutAll=[15,15,15,15,13,12,13,12,14,13,12,12,14,13,13,13,13];
-const detAll =[14,11,11,12, 9, 9, 9, 8, 9, 9,10, 9,12,11,10, 9,10];
-const npsReg =[62.81,67.99,69.27,67.58,73.83,76.00,74.70,77.25,73.26,74.30,72.84,75.89,67.92,70.20,72.74,73.38,72.76];
-const npsToc =[46.81,51.99,53.27,51.58,57.83,60.00,58.70,61.25,57.26,58.30,56.84,59.89,51.92,54.20,56.74,57.38,56.76];
 
+/* NPS mensal real (base 484.255 avaliações com qtd_clientes) */
+const npsAll=[81.87,86.35,86.18,87.0,88.41,89.73,89.45,89.62,88.69,88.05,88.37,88.88,85.96,87.32,87.33,87.43,87.42];
+const npsReg=[83.28,87.2,87.14,87.87,89.0,90.14,90.2,90.26,89.27,88.58,89.37,89.45,86.8,88.18,88.15,88.24,88.05];
+const npsToc=[76.4,82.97,82.27,83.8,86.16,88.01,86.84,87.11,86.34,86.32,84.61,86.88,82.67,84.09,84.51,84.68,85.19];
+
+/* Volume mensal total */
+const volAll=[31013,21670,25550,26824,29659,34552,26445,31213,30968,29785,27050,36374,28786,27533,29810,29018,18005];
+const volReg=[24881,17258,20428,21054,23516,27565,20669,24885,24428,22742,21113,28379,22763,21731,23117,22466,14062];
+const volToc=[6000,4358,5058,5722,6053,6903,5693,6247,6441,6954,5828,7899,5965,5765,6693,6552,3943];
+
+/* Distribuição mensal (%) — base real */
+const promAll=[86.5,89.9,89.8,90.5,91.4,92.2,91.9,92.1,91.4,91.0,91.4,91.8,89.8,90.7,90.7,90.7,90.6];
+const neutAll=[8.8,6.6,6.5,6.0,5.7,5.3,5.6,5.4,5.9,6.0,5.6,5.3,6.4,5.9,6.0,5.9,6.1];
+const detAll=[4.6,3.5,3.6,3.5,3.0,2.5,2.5,2.5,2.7,3.0,3.0,2.9,3.8,3.4,3.4,3.3,3.2];
+const promReg=[87.4,90.4,90.4,91.1,91.8,92.6,92.5,92.6,91.8,91.4,91.9,92.1,90.3,91.3,91.2,91.2,91.1];
+const neutReg=[8.5,6.3,6.3,5.6,5.4,5.0,5.3,5.1,5.7,5.8,5.5,5.2,6.3,5.7,5.7,5.8,5.9];
+const detReg=[4.1,3.2,3.3,3.2,2.8,2.4,2.3,2.3,2.5,2.8,2.6,2.7,3.5,3.1,3.1,3.0,3.0];
+const promToc=[83.0,87.8,87.4,88.3,89.8,90.8,90.2,90.4,89.9,89.8,89.2,90.6,87.8,88.7,88.8,89.1,89.1];
+const neutToc=[10.4,7.4,7.5,7.2,6.5,6.4,6.5,6.3,6.6,6.7,6.2,5.7,7.0,6.8,6.8,6.5,6.9];
+const detToc=[6.6,4.8,5.1,4.5,3.7,2.8,3.3,3.3,3.5,3.5,4.6,3.7,5.2,4.6,4.3,4.4,3.9];
+
+/* Volume mensal por classificação */
+const volPromotor=[26831,19481,22951,24279,27101,31869,24316,28758,28307,27110,24717,33394,25842,24974,27033,26333,16321];
+const volNeutro=[2741,1421,1667,1603,1678,1816,1469,1670,1818,1792,1521,1917,1846,1626,1777,1723,1103];
+const volDetrator=[1441,768,932,942,880,867,660,785,843,883,812,1063,1098,933,1000,962,581];
+const volPromReg=[21750,15606,18472,19183,21584,25521,19110,23036,22423,20783,19413,26148,20547,19831,21087,20495,12807];
+const volPromToc=[4981,3825,4420,5052,5436,6267,5134,5648,5788,6245,5198,7157,5240,5111,5946,5838,3514];
+const volNeutReg=[2103,1095,1285,1188,1277,1370,1093,1273,1390,1320,1156,1467,1427,1232,1320,1299,829];
+const volNeutToc=[622,324,379,413,396,444,369,393,426,467,363,448,416,391,457,424,274];
+const volDetReg=[1028,557,671,683,655,674,466,576,615,639,544,764,789,668,710,672,426];
+const volDetToc=[397,209,259,257,221,192,190,206,227,242,267,294,309,263,290,290,155];
+
+/* NPS por categoria por flag (base classificada 50k cruzada com flag) */
 const catData={
-  regular:{ top:[['Qualidade dos Produtos',73.2],['Atendimento Positivo',72.8],['Elogios Gerais',68.5]], bot:[['Marca Swift',46.8],['Preços e Experiência Geral',59.5],['Operações da Loja',63.0]] },
-  tocador:{ top:[['Canal Digital',100.0],['Elogios Gerais',100.0],['Qualidade dos Produtos',92.6]],     bot:[['Operações da Loja',50.0],['Marca Swift',75.0],['Atendimento Positivo',87.9]] }
+  regular:{ top:[['Qualidade dos Produtos',75.3],['Atendimento Positivo',74.3],['Elogios Gerais',69.0]], bot:[['Marca Swift',47.4],['Preços e Experiência Geral',61.1],['Operações da Loja',65.5]] },
+  tocador:{ top:[['Atendimento Positivo',68.0],['Elogios Gerais',67.0],['Qualidade dos Produtos',66.2]], bot:[['Marca Swift',45.5],['Operações da Loja',54.7],['Preços e Experiência Geral',54.2]] }
 };
 
+/* Séries de volume por categoria por mês (base classificada) */
 const catSeries={
-  'Atendimento Positivo': [700,462,531,566,643,653,511,619,624,624,542,779,604,610,704,629,399],
-  'Preços e Experiência Geral': [774,548,652,587,671,715,581,714,686,718,578,874,710,670,732,714,480],
-  'Qualidade dos Produtos': [481,358,399,411,472,524,377,463,445,495,423,591,505,446,548,487,293],
-  'Operações da Loja': [151,110,127,122,130,148,134,146,177,146,125,199,150,144,156,144,82],
-  'Canal Digital': [81,42,45,83,61,78,69,77,65,66,71,110,92,61,65,68,59],
-  'Marca Swift': [110,77,95,83,92,110,74,94,90,99,94,121,97,106,92,81,53],
+  'Atendimento Positivo':[700,462,531,566,643,653,511,619,624,624,542,779,604,610,704,629,399],
+  'Preços e Experiência Geral':[774,548,652,587,671,715,581,714,686,718,578,874,710,670,732,714,480],
+  'Qualidade dos Produtos':[481,358,399,411,472,524,377,463,445,495,423,591,505,446,548,487,293],
+  'Operações da Loja':[151,110,127,122,130,148,134,146,177,146,125,199,150,144,156,144,82],
+  'Canal Digital':[81,42,45,83,61,78,69,77,65,66,71,110,92,61,65,68,59],
+  'Marca Swift':[110,77,95,83,92,110,74,94,90,99,94,121,97,106,92,81,53],
+  'Elogios Gerais':[28,17,24,21,33,29,30,21,26,27,31,34,42,18,32,34,15],
 };
+
+/* Séries de volume por categoria por mês POR CLASSIFICAÇÃO */
+const catSeriesByCls={
+  Promotor:{
+    'Atendimento Positivo':[556,379,444,458,553,564,429,540,539,531,458,691,484,520,591,534,342],
+    'Preços e Experiência Geral':[485,335,418,371,456,489,399,500,453,491,406,609,479,453,494,484,319],
+    'Qualidade dos Produtos':[394,305,334,349,411,465,336,421,391,431,362,515,423,378,463,422,252],
+    'Operações da Loja':[99,79,83,81,96,117,99,106,116,110,95,146,113,98,107,106,67],
+    'Canal Digital':[61,26,33,63,43,56,53,63,47,49,55,89,74,46,49,50,40],
+    'Marca Swift':[50,40,48,34,52,71,38,50,50,60,45,66,47,49,51,38,28],
+    'Elogios Gerais':[21,14,18,18,27,27,23,17,22,17,22,27,27,13,28,26,12],
+  },
+  Neutro:{
+    'Atendimento Positivo':[37,25,20,23,21,25,17,22,33,29,18,14,28,23,35,22,15],
+    'Preços e Experiência Geral':[209,162,188,159,169,184,142,172,182,180,131,200,172,169,184,184,128],
+    'Qualidade dos Produtos':[6,2,2,6,5,2,4,2,4,4,2,9,2,6,7,4,3],
+    'Operações da Loja':[32,22,29,30,24,22,23,28,38,25,23,38,27,28,37,26,10],
+    'Canal Digital':[10,10,8,12,10,15,12,9,12,15,12,15,10,6,11,10,14],
+    'Marca Swift':[54,30,40,47,38,37,34,39,33,36,40,49,43,48,40,39,22],
+    'Elogios Gerais':[6,2,4,2,4,1,5,2,1,2,7,5,11,3,2,2,2],
+  },
+  Detrator:{
+    'Atendimento Positivo':[107,58,67,85,69,64,65,57,52,64,66,74,92,67,78,73,42],
+    'Preços e Experiência Geral':[80,51,46,57,46,42,40,42,51,47,41,65,59,48,54,46,33],
+    'Qualidade dos Produtos':[81,51,63,56,56,57,37,40,50,60,59,67,80,62,78,61,38],
+    'Operações da Loja':[20,9,15,11,10,9,12,12,23,11,7,15,10,18,12,12,5],
+    'Canal Digital':[10,6,4,8,8,7,4,5,6,2,4,6,8,9,5,8,5],
+    'Marca Swift':[6,7,7,2,2,2,2,5,7,3,9,6,7,9,1,4,3],
+    'Elogios Gerais':[1,1,2,1,2,1,2,2,3,8,2,2,4,2,2,6,1],
+  },
+};
+
+/* Sazonalidade — volume por estação por categoria */
 const estLabels=['Verão','Outono','Inverno','Fim de Ano'];
-const estData={'Atendimento Positivo':[3611,2890,1754,1945],'Preços e Experiência Geral':[4086,3167,1981,2170],'Qualidade dos Produtos':[2737,2187,1285,1509],'Operações da Loja':[838,626,457,470]};
-const estDataByCls={
-  Promotor:{'Atendimento Positivo':[2974,2451,1508,1680],'Preços e Experiência Geral':[2664,2119,1352,1506],'Qualidade dos Produtos':[2297,1899,1148,1308],'Operações da Loja':[579,467,321,351]},
-  Neutro:  {'Atendimento Positivo':[168,106,72,61],       'Preços e Experiência Geral':[1084,824,496,511],   'Qualidade dos Produtos':[25,20,10,15],          'Operações da Loja':[175,112,89,86]},
-  Detrator:{'Atendimento Positivo':[469,333,174,204],     'Preços e Experiência Geral':[338,224,133,153],    'Qualidade dos Produtos':[415,268,127,186],       'Operações da Loja':[84,47,47,33]}
+const estData={
+  'Atendimento Positivo':[3611,2890,1754,1945],
+  'Preços e Experiência Geral':[4086,3167,1981,2170],
+  'Qualidade dos Produtos':[2737,2187,1285,1509],
+  'Operações da Loja':[838,626,457,470],
+  'Canal Digital':[386,349,211,247],
+  'Marca Swift':[577,419,258,314],
+  'Elogios Gerais':[161,132,77,92],
 };
+const estDataByCls={
+  Promotor:{'Atendimento Positivo':[2974,2451,1508,1680],'Preços e Experiência Geral':[2664,2119,1352,1506],'Qualidade dos Produtos':[2297,1899,1148,1308],'Operações da Loja':[579,467,321,351],'Canal Digital':[289,252,163,193],'Marca Swift':[285,223,138,171],'Elogios Gerais':[121,110,62,66]},
+  Neutro:{'Atendimento Positivo':[168,106,72,61],'Preços e Experiência Geral':[1084,824,496,511],'Qualidade dos Produtos':[25,20,10,15],'Operações da Loja':[175,112,89,86],'Canal Digital':[55,61,33,42],'Marca Swift':[255,183,106,125],'Elogios Gerais':[28,11,8,14]},
+  Detrator:{'Atendimento Positivo':[469,333,174,204],'Preços e Experiência Geral':[338,224,133,153],'Qualidade dos Produtos':[415,268,127,186],'Operações da Loja':[84,47,47,33],'Canal Digital':[42,36,15,12],'Marca Swift':[37,13,14,18],'Elogios Gerais':[12,11,7,12]},
+};
+
+/* Top/Bottom 5 lojas NPS (base real 484k) */
+const topLojas=[['LEME',94.7],['MALL MULTI GERMINARE',94.2],['PRESIDENTE PRUDENTE',94.0],['PINDAMONHANGABA',93.9],['LIMEIRA',93.8]];
+const botLojas=[['KLABIN',76.3],['VILLA LOBOS',78.7],['VILA MARIANA 2',78.7],['LEOPOLDINA',79.0],['VILA ANDRADE',79.2]];
 
 const storeDB={
   vila:{label:'Vila Mariana',region:'Capital',flag:'regular',oldNps:10.0,newNps:70.0,old:{P:40,N:30,D:30},new:{Pos:80,Neu:10,Neg:10},comments:[
-    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Atendimento excelente, loja bem organizada e equipe muito prestativa.'},
-    {cls:'Neutro',rec:'Positivo',cat:'Canal Digital',txt:'Loja ok, mas faltavam alguns itens que eu procurava.'},
-    {cls:'Detrator',rec:'Positivo',cat:'Operações da Loja',txt:'Fila grande e atendimento frio. Muito calor dentro.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Canal Digital',txt:'Nota 9, mas a loja estava bagunçada e faltou produto no açougue.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Produtos sempre frescos, muito bom.'},
-    {cls:'Neutro',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Achei o atendimento ok, nada excepcional.'},
-    {cls:'Detrator',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Nota 3 mas na real a loja é boa, preço justo.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Entrega rápida e sem problemas.'},
-    {cls:'Detrator',rec:'Neutro',cat:'Atendimento Positivo',txt:'Pedido atrasou 3 dias.'},
-    {cls:'Neutro',rec:'Negativo',cat:'Atendimento Positivo',txt:'Estacionamento péssimo, quase fui embora.'}
+    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Fui atendida pela Débora , uma ótima funcionária muito simpática e muito educada'},
+    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Recomendo o lugar, fácil acesso, os funcionários são incríveis'},
+    {cls:'Promotor',rec:'Positivo',cat:'Outros/Inclassificável',txt:'Mantendo a qualidade ótima dos colaboradores\nParabéns pela equipe'},
+    {cls:'Promotor',rec:'Positivo',cat:'Marca Swift',txt:'Atendente Rafaeli , muito prestativa e atenciosa para localizar o produto desejado com devida orientação'},
+    {cls:'Neutro',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'Caixas com produtos sem refrigeração empilhadas ao lado do elevador de estoque. Foi nessa pilha que estava meu frango Pioneiro. Não sabiam se tinha estoque mesmo eu informando que estava disponível para retirada no e-commerce, portanto era certo que tinha estoque na loja.'},
+    {cls:'Neutro',rec:'Negativo',cat:'Outros/Inclassificável',txt:'Faltam muitos itens, e a carne de panela em cubos da swift é de péssima qualidade os cubos na verdade são retalhos cheio de gordura, R$ 50,00 o kilo é um preço para uma qualidade melhor, não fiquei satisfeita.'},
+    {cls:'Neutro',rec:'Negativo',cat:'Operações da Loja',txt:'Entregaram produto errado e até agora não me contataram para resolver'},
+    {cls:'Detrator',rec:'Negativo',cat:'Qualidade dos Produtos',txt:'Estive na loja de Bragança Paulista no ultimo domingo, sempre estou por la e o atendimento sempre foi ótimo, mas dessa ultima vez, estava com dificuldade de achar certo produto, cheguei ate o moço que estava repondo mercadoria, dei bom dia e perguntei se ele podia me ajudar, fui completamente ignorada. Achei que ele nao tivesse ouvido, e ainda fiquei perto por alguns instantes esperando que ele virasse. Ele virou e me olhou de cara feia. Foi a primeira vez que isso ocorreu na unidade. Infelizmente o atendimento deixou a desejar.'},
+    {cls:'Detrator',rec:'Negativo',cat:'Outros/Inclassificável',txt:'Cliente há muitos anos agora frustrante a quantidade de espinhos em files!! Até no linguado, lombo de bacalhau até com espinha e, sumiu pescadinha branca desde o Natal!!!'},
+    {cls:'Detrator',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'Alguns produtos ao descongelar estavam com cheiro ruim, imagino que houve algum problema com o processo de congelamento, fora isso um dos produtos estava com muita gordura e com problemas no corte da carne'}
   ]},
   pin:{label:'Pinheiros',region:'RMSP',flag:'regular',oldNps:14.3,newNps:71.4,old:{P:43,N:29,D:29},new:{Pos:71,Neu:29,Neg:0},comments:[
-    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Equipe educada e muito rápida.'},
-    {cls:'Detrator',rec:'Neutro',cat:'Atendimento Positivo',txt:'Demora na retirada e confusão no balcão.'},
-    {cls:'Neutro',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Achei alguns itens um pouco caros.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Nota 10, mas o ar condicionado estava quebrado.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Variedade excelente de produtos orgânicos.'},
-    {cls:'Detrator',rec:'Neutro',cat:'Atendimento Positivo',txt:'Funcionário foi grosso comigo.'},
-    {cls:'Neutro',rec:'Positivo',cat:'Atendimento Positivo',txt:'App funciona bem, mas a loja é mediana.'}
+    {cls:'Promotor',rec:'Positivo',cat:'Outros/Inclassificável',txt:'Mantendo a qualidade ótima dos colaboradores. Parabéns pela equipe'},
+    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Não tinha alguns cortes como os bifes de angus e de chorizo. No mais, encontrei tudo que precisava.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Outros/Inclassificável',txt:'Não acontecer mais o ocorrido em meu penúltimo pedido.'},
+    {cls:'Neutro',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'Os cortes das carnes já são bem feitos. Desta vez comprei bife de patinho para fazer a milanesa. Os bifes precisaram ser fatiados duas a três vezes e estavam cortados de maneira errada, portanto muito duro. Tentei fazer na panela de pressão, sem sucesso! Não cozinhou de jeito nenhum. É preciso melhorar o treinamento dos acougueiros'},
+    {cls:'Neutro',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'Agilizando a entrega. O pedido foi feito pela manhã e só foi entregue na manhã do outro dia. Sim, isto está explícito no site. Porém é um prazo muito longo para produtos previamente embalados.'},
+    {cls:'Detrator',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'Dessa vez o aplicativo do entregador disparou alertas da entrega mais de 15 vezes, chegando a bloquear meu celular e só parou quando contatei vcs. Toda vez tenho problema, com uma coisa ou outra e isso é desgastante.'},
+    {cls:'Detrator',rec:'Negativo',cat:'Atendimento Positivo',txt:'Eu comprei 2 peças de contra filé e elas estavam extremamente duras, sem condições de comê-las no churrasco, tivemos que utilizar cozidas numa panela de pressão.'}
   ]},
   moe:{label:'Moema',region:'RMSP',flag:'tocador',oldNps:16.7,newNps:83.3,old:{P:50,N:17,D:33},new:{Pos:83,Neu:17,Neg:0},comments:[
-    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Boa variedade e produtos frescos.'},
-    {cls:'Detrator',rec:'Neutro',cat:'Operações da Loja',txt:'Loja apertada e fila grande no fim da tarde.'},
-    {cls:'Neutro',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Preços acima da média da região.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Nota 9, mas a entrega atrasou 2 vezes.'},
-    {cls:'Detrator',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Nota 2 mas confesso que o atendimento foi bom.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Equipe muito atenciosa.'}
+    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Tudo muito organizado, limpo, disponível, atendimento afetuoso, carinhoso. Não tenho ideia pra melhorar, está ótimo'},
+    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Loja com muita variedade e organizada, parabéns'},
+    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Excelente atendimento do Junior, voltarei por causa dele.'},
+    {cls:'Neutro',rec:'Negativo',cat:'Operações da Loja',txt:'Entregaram produto errado e até agora não me contataram para resolver'},
+    {cls:'Detrator',rec:'Negativo',cat:'Qualidade dos Produtos',txt:'As carnes, como estão embaladas e congeladas, o cliente não tem como saber como está o produto, depois que tira da embalagem é que vamos ver o tanto de sebo e gordura que tem, não estou gostando nada disso e me sinto enganada.'},
+    {cls:'Detrator',rec:'Negativo',cat:'Outros/Inclassificável',txt:'Os valores da Swift subiram demais'}
   ]},
   tuc:{label:'Tucuruvi',region:'RMSP',flag:'tocador',oldNps:-25.0,newNps:50.0,old:{P:25,N:25,D:50},new:{Pos:62,Neu:25,Neg:12},comments:[
-    {cls:'Detrator',rec:'Neutro',cat:'Operações da Loja',txt:'Muito calor e fila desorganizada.'},
-    {cls:'Detrator',rec:'Positivo',cat:'Operações da Loja',txt:'Atendimento frio e sem orientação.'},
-    {cls:'Neutro',rec:'Neutro',cat:'Preços e Experiência Geral',txt:'Pouca opção e produto não parecia fresco.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Operações da Loja',txt:'Nota 9 mas a loja precisa de reforma urgente.'},
-    {cls:'Detrator',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'Caro demais pra qualidade oferecida.'},
-    {cls:'Neutro',rec:'Positivo',cat:'Atendimento Positivo',txt:'Site ok, nada especial.'},
-    {cls:'Detrator',rec:'Positivo',cat:'Atendimento Positivo',txt:'Nota 1 mas os produtos de marca própria são bons.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Atendimento Positivo',txt:'Frutas sempre frescas.'}
+    {cls:'Promotor',rec:'Positivo',cat:'Marca Swift',txt:'Atendente Rafaeli, muito prestativa e atenciosa para localizar o produto desejado com devida orientação'},
+    {cls:'Promotor',rec:'Positivo',cat:'Outros/Inclassificável',txt:'Mantendo preços justos, limpeza e qualidade e inovação de produtos...'},
+    {cls:'Promotor',rec:'Positivo',cat:'Outros/Inclassificável',txt:'Sou cliente há muito tempo e gosto muito da loja. Quero dar boas vindas a nova colaboradora Renata pelo seu atendimento e gentileza.'},
+    {cls:'Neutro',rec:'Negativo',cat:'Outros/Inclassificável',txt:'Não foi obedecido o prazo de entrega'},
+    {cls:'Neutro',rec:'Negativo',cat:'Preços e Experiência Geral',txt:'De verdade os preços estão muito altos'},
+    {cls:'Detrator',rec:'Negativo',cat:'Marca Swift',txt:'Produtos caros, preços fora do padrão, máquinas de preços não funcionam'},
+    {cls:'Detrator',rec:'Negativo',cat:'Operações da Loja',txt:'Comprei uma carne moída no meu último pedido de vcs, a carne está estragada e não tive nenhum retorno até o momento'},
+    {cls:'Detrator',rec:'Negativo',cat:'Outros/Inclassificável',txt:'As carnes muito escuras, praticamente pretas. As picanhas com peso que não é de picanha passando a terceira fibra, sem gordura alguma. A qualidade caiu bastante perto do que era.'}
   ]},
   gua:{label:'Guarulhos',region:'Interior',flag:'tocador',oldNps:-16.7,newNps:66.7,old:{P:33,N:17,D:50},new:{Pos:67,Neu:33,Neg:0},comments:[
-    {cls:'Detrator',rec:'Neutro',cat:'Operações da Loja',txt:'Demora enorme na retirada e fila no caixa.'},
-    {cls:'Detrator',rec:'Positivo',cat:'Atendimento Positivo',txt:'Faltavam produtos básicos.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'O gerente é muito simpático.'},
-    {cls:'Neutro',rec:'Neutro',cat:'Operações da Loja',txt:'Loja suja e mal iluminada.'},
-    {cls:'Promotor',rec:'Positivo',cat:'Qualidade dos Produtos',txt:'Nota 10 mas os preços subiram muito.'},
-    {cls:'Detrator',rec:'Positivo',cat:'Atendimento Positivo',txt:'Esperamos 40 min para ser atendidos.'}
+    {cls:'Promotor',rec:'Positivo',cat:'Marca Swift',txt:'Poderia somente ter uma pessoa auxiliando a encontrar os produtos caso seja desejo do cliente receber ajuda'},
+    {cls:'Promotor',rec:'Positivo',cat:'Operações da Loja',txt:'Bom dia, está ótimo aqui a loja de cruzeiro para nós, muito bom.'},
+    {cls:'Promotor',rec:'Positivo',cat:'Preços e Experiência Geral',txt:'Fui muito bem atendido, me foi dado ajuda com dúvidas e localização dos produtos, com cordialidade'},
+    {cls:'Neutro',rec:'Neutro',cat:'Atendimento Positivo',txt:'Linha black muito cara e pouca variedade'},
+    {cls:'Detrator',rec:'Negativo',cat:'Qualidade dos Produtos',txt:'Cash back é ridículo. É um sequestro do nosso dinheiro.'},
+    {cls:'Detrator',rec:'Negativo',cat:'Outros/Inclassificável',txt:'Compro sempre pelo APP e todas as vezes foi necessário entrar em contato com o Swift Resolve para cobrar a entrega que sempre está fora do prazo. Vocês tem que verificar a logística da entrega, não está boa.'}
   ]}
 };
 
-/* ── NPS globais calculados do notebook (base 103.663 registros c/ comentário) ── */
+/* ── NPS globais reais (base 484.255 avaliações com qtd_clientes) ── */
 const NPS_GLOBAL = {
   all:     { orig: 63.92, reclass: 64.60 },
-  regular: { orig: 63.85, reclass: 64.52 },
-  tocador: { orig: 90.23, reclass: 90.98 },
+  regular: { orig: 65.52, reclass: 66.22 },
+  tocador: { orig: 58.51, reclass: 59.19 },
 };
 
-/* ── Divergências reais: classificacao_ajustada_v2 com limiar_base=0.75, limiar_neutro=0.90 ── */
-/* 773 registros divergentes de 103.663 total = 0.7% */
+/* ── Divergências reais ── */
 const DIV_GLOBAL = {
   all:     { total: 0.7, p: 0.3, n: 1.8, d: 2.1 },
   regular: { total: 0.7, p: 0.3, n: 1.8, d: 2.1 },
   tocador: { total: 0.7, p: 0.3, n: 1.8, d: 2.1 },
+};
+
+/* ── Sankey global (base com comentário válido: 128.341 avaliações) ── */
+const SANKEY_GLOBAL = {
+  old: { P: 78.2, N: 12.4, D: 9.3 },
+  new: { Pos: 93.0, Neu: 2.1, Neg: 4.9 }
 };
 
 /* ────────────────────────────────── FILTROS ── */
@@ -867,29 +943,56 @@ function getDateRange(){
 function sliceByDate(arr){ const {from,to}=getDateRange(); return arr.slice(from,to+1); }
 function getLabels(){ return sliceByDate(months); }
 
-function applyFilters(data){
-  let out=sliceByDate(data);
-  // Aplicar proporção por flag (regular = 99.7% da base, tocador = 0.3%)
-  if(filterState.flag==='regular')  out=out.map(v=>+(v*0.997).toFixed(2));
-  if(filterState.flag==='tocador')  out=out.map(v=>+(v*0.003).toFixed(2));
-  if(filterState.region){
-    const m={Capital:1.03,DF:0.98,GO:0.96,Interior:0.97,Litoral:1.01,RJ:0.99,RMSP:1.02}[filterState.region]||1;
-    out=out.map(v=>+(v*m).toFixed(2));
+/* Retorna a série de volume correta conforme filtros de flag e cls */
+function getVolSeries(){
+  const f=filterState.flag, c=filterState.cls;
+  if(c==='Promotor'){
+    if(f==='regular') return volPromReg;
+    if(f==='tocador') return volPromToc;
+    return volPromotor;
   }
-  if(filterState.cls){
-    const m={Promotor:0.767,Neutro:0.132,Detrator:0.101}[filterState.cls]||1;
-    out=out.map(v=>+(v*m).toFixed(2));
+  if(c==='Neutro'){
+    if(f==='regular') return volNeutReg;
+    if(f==='tocador') return volNeutToc;
+    return volNeutro;
   }
-  return out;
+  if(c==='Detrator'){
+    if(f==='regular') return volDetReg;
+    if(f==='tocador') return volDetToc;
+    return volDetrator;
+  }
+  if(f==='regular') return volReg;
+  if(f==='tocador') return volToc;
+  return volAll;
 }
-// Filtro só de data/region para séries de NPS (não multiplica por flag/cls — já são séries dedicadas)
+
+/* Retorna % de promotores/neutros/detratores conforme flag */
+function getDistSeries(){
+  const f=filterState.flag;
+  if(f==='regular') return {prom:promReg,neut:neutReg,det:detReg};
+  if(f==='tocador') return {prom:promToc,neut:neutToc,det:detToc};
+  return {prom:promAll,neut:neutAll,det:detAll};
+}
+
+/* Retorna a série NPS correta conforme flag */
+function getNpsSeries(){
+  const f=filterState.flag;
+  if(f==='regular') return npsReg;
+  if(f==='tocador') return npsToc;
+  return npsAll;
+}
+
+/* Retorna séries de categorias conforme cls filter */
+function getCatSeries(){
+  if(filterState.cls && catSeriesByCls[filterState.cls]) return catSeriesByCls[filterState.cls];
+  return catSeries;
+}
+
+function applyFilters(data){
+  return sliceByDate(data);
+}
 function applyNpsFilters(data){
-  let out=sliceByDate(data);
-  if(filterState.region){
-    const m={Capital:1.03,DF:0.98,GO:0.96,Interior:0.97,Litoral:1.01,RJ:0.99,RMSP:1.02}[filterState.region]||1;
-    out=out.map(v=>+(v*m).toFixed(2));
-  }
-  return out;
+  return sliceByDate(data);
 }
 
 /* ────────────────────────────────── CHARTS ── */
@@ -917,65 +1020,68 @@ function renderCharts(){
   const labels=getLabels();
   const flag=filterState.flag;
   const cat=filterState.cat;
+  const cls=filterState.cls;
   const cc=catColors();
 
   // ── Série NPS base por flag ──
-  const base=flag==='regular'?npsReg:flag==='tocador'?npsToc:npsAll;
-  mk('cP1Nps',{type:'line',data:{labels,datasets:[{data:applyNpsFilters(base),borderColor:br(),backgroundColor:'rgba(242,140,40,.14)',fill:true,tension:.38,pointRadius:3}]},options:{aspectRatio:3.5,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:40,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
-  mk('cP2Nps',{type:'line',data:{labels,datasets:[{label:'NPS',data:applyNpsFilters(base),borderColor:br(),backgroundColor:'rgba(242,140,40,.14)',fill:true,tension:.38,pointRadius:3}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:40,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
+  const baseNps=getNpsSeries();
+  mk('cP1Nps',{type:'line',data:{labels,datasets:[{data:applyNpsFilters(baseNps),borderColor:br(),backgroundColor:'rgba(242,140,40,.14)',fill:true,tension:.38,pointRadius:3}]},options:{aspectRatio:3.5,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:60,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
+  mk('cP2Nps',{type:'line',data:{labels,datasets:[{label:'NPS',data:applyNpsFilters(baseNps),borderColor:br(),backgroundColor:'rgba(242,140,40,.14)',fill:true,tension:.38,pointRadius:3}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:60,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
 
-  // ── P2: Volume — se filtro de cat ativo, usa a série dessa categoria; senão, volAll ──
-  const volSrc=cat&&catSeries[cat]?catSeries[cat]:volAll;
-  mk('cP2Vol',{type:'bar',data:{labels,datasets:[{data:applyFilters(volSrc),backgroundColor:br(),borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{grid:{color:gc()},ticks:{color:mc()}}}}});
+  // ── P2: Volume — usa série real filtrada por cls/flag; se cat ativo usa catSeries ──
+  const activeCatSeries=getCatSeries();
+  const volSrc=cat&&activeCatSeries[cat]?activeCatSeries[cat]:getVolSeries();
+  mk('cP2Vol',{type:'bar',data:{labels,datasets:[{data:applyFilters(volSrc),backgroundColor:br(),borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:0,max:40000,grid:{color:gc()},ticks:{color:mc()}}}}});
 
-  // ── P2: Stack Promotor/Neutro/Detrator — filtra por cls se ativo ──
-  // Se filtro de cls ativo, mostra só aquela série destacada
-  const showAll=!filterState.cls;
-  const stackDS=showAll
-    ? [{label:'Promotores',data:applyFilters(promAll),backgroundColor:'#2ecc71',borderRadius:2},
-       {label:'Neutros',   data:applyFilters(neutAll),backgroundColor:'#f1c40f',borderRadius:2},
-       {label:'Detratores',data:applyFilters(detAll), backgroundColor:'#e74c3c',borderRadius:2}]
-    : filterState.cls==='Promotor'
-      ? [{label:'Promotores',data:applyFilters(promAll),backgroundColor:'#2ecc71',borderRadius:2}]
-      : filterState.cls==='Neutro'
-      ? [{label:'Neutros',   data:applyFilters(neutAll),backgroundColor:'#f1c40f',borderRadius:2}]
-      : [{label:'Detratores',data:applyFilters(detAll), backgroundColor:'#e74c3c',borderRadius:2}];
+  // ── P2: Stack Promotor/Neutro/Detrator ──
+  const dist=getDistSeries();
+  const showAllStack=!cls;
+  const stackDS=showAllStack
+    ? [{label:'Promotores',data:applyFilters(dist.prom),backgroundColor:'#2ecc71',borderRadius:2},
+       {label:'Neutros',   data:applyFilters(dist.neut),backgroundColor:'#f1c40f',borderRadius:2},
+       {label:'Detratores',data:applyFilters(dist.det), backgroundColor:'#e74c3c',borderRadius:2}]
+    : cls==='Promotor'
+      ? [{label:'Promotores',data:applyFilters(dist.prom),backgroundColor:'#2ecc71',borderRadius:2}]
+      : cls==='Neutro'
+      ? [{label:'Neutros',   data:applyFilters(dist.neut),backgroundColor:'#f1c40f',borderRadius:2}]
+      : [{label:'Detratores',data:applyFilters(dist.det), backgroundColor:'#e74c3c',borderRadius:2}];
   mk('cP2Stack',{type:'bar',data:{labels,datasets:stackDS},options:{plugins:{legend:{labels:{color:tc()}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>=6;},color:'#fff',font:{size:10,weight:'700'},formatter:function(v){return v+'%';},anchor:'center',align:'center',clamp:true}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{stacked:true,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
 
   // ── P3: Regular vs Tocador ──
-  mk('cP3Flag',{type:'line',data:{labels,datasets:flagSeries()},options:{plugins:{legend:{labels:{color:tc()}}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:40,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
+  mk('cP3Flag',{type:'line',data:{labels,datasets:flagSeries()},options:{plugins:{legend:{labels:{color:tc()}}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{min:60,max:100,grid:{color:gc()},ticks:{color:mc()}}}}});
 
-  // ── P4: Temas — filtra por flag (regular/tocador têm distribuição diferente) e por cls ──
-  // Volumes base da planilha completa; ao filtrar cls, usa proporção real de cada cls por categoria
+  // ── P4: Temas — filtra por cls e por cat ──
   const topicsVol={
-    all:     {'Preços e Experiência Geral':11404,'Atendimento Positivo':10200,'Qualidade dos Produtos':7718,'Operações da Loja':2391,'Marca Swift':1568,'Canal Digital':1193,'Elogios Gerais':462},
-    Promotor:{'Preços e Experiência Geral':7641, 'Atendimento Positivo':8606, 'Qualidade dos Produtos':6642,'Operações da Loja':1718,'Marca Swift':817, 'Canal Digital':897, 'Elogios Gerais':359},
+    all:     {'Preços e Experiência Geral':11395,'Atendimento Positivo':10193,'Qualidade dos Produtos':7708,'Operações da Loja':2391,'Marca Swift':1568,'Canal Digital':1193,'Elogios Gerais':462},
+    Promotor:{'Preços e Experiência Geral':7641, 'Atendimento Positivo':8613, 'Qualidade dos Produtos':6652,'Operações da Loja':1718,'Marca Swift':817, 'Canal Digital':897, 'Elogios Gerais':359},
+    Neutro:  {'Preços e Experiência Geral':2915, 'Atendimento Positivo':407,  'Qualidade dos Produtos':70,  'Operações da Loja':462, 'Marca Swift':669, 'Canal Digital':191, 'Elogios Gerais':61},
     Detrator:{'Preços e Experiência Geral':848,  'Atendimento Positivo':1180, 'Qualidade dos Produtos':996, 'Operações da Loja':211, 'Marca Swift':82,  'Canal Digital':105, 'Elogios Gerais':42},
   };
-  const tvSrc=filterState.cls&&topicsVol[filterState.cls]?topicsVol[filterState.cls]:topicsVol.all;
-  // Se filtro de cat, destaca só aquela categoria
+  const tvSrc=cls&&topicsVol[cls]?topicsVol[cls]:topicsVol.all;
   const topicsCats=Object.keys(tvSrc);
-  const topicsData=topicsCats.map(c=>(!cat||c===cat||c.startsWith(cat.split(' ')[0]))?tvSrc[c]:0);
+  const topicsData=topicsCats.map(c=>(!cat||c===cat)?tvSrc[c]:0);
   const topicsColors=topicsCats.map(c=>cc[c]||br());
-  mk('cP4Topics',{type:'bar',data:{labels:['Preços e Exp. Geral','Atendimento Positivo','Qualidade dos Produtos','Operações da Loja','Marca Swift','Canal Digital','Elogios Gerais'],datasets:[{data:topicsData,backgroundColor:topicsColors,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{grid:{color:gc()},ticks:{color:mc()}},y:{grid:{display:false},ticks:{color:tc()}}}}});
+  mk('cP4Topics',{type:'bar',data:{labels:topicsCats.map(c=>c==='Atendimento Positivo'?'Atendimento':c.length>20?c.substring(0,18)+'…':c),datasets:[{data:topicsData,backgroundColor:topicsColors,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{grid:{color:gc()},ticks:{color:mc()}},y:{grid:{display:false},ticks:{color:tc()}}}}});
 
-  // ── P4: Comprimento médio — filtra por cls se ativo ──
+  // ── P4: Comprimento médio ──
   const lenData={Detrator:33.4,Neutro:25.1,Promotor:13.8};
-  const lenLabels=filterState.cls?[filterState.cls]:['Detrator','Neutro','Promotor'];
+  const lenLabels=cls?[cls]:['Detrator','Neutro','Promotor'];
   const lenVals=lenLabels.map(l=>lenData[l]);
   const lenColors=lenLabels.map(l=>l==='Detrator'?'#e74c3c':l==='Neutro'?'#f1c40f':'#2ecc71');
   mk('cP4Len',{type:'bar',data:{labels:lenLabels,datasets:[{data:lenVals,backgroundColor:lenColors,borderRadius:6}]},options:{plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{grid:{display:false},ticks:{color:tc()}},y:{grid:{color:gc()},ticks:{color:mc()}}}}});
 
-  // ── P5: Volume por categoria ao longo do tempo — filtra por cat se ativo ──
+  // ── P5: Volume por categoria ao longo do tempo — usa catSeries filtrado por cls ──
+  const p5CatSrc=getCatSeries();
   const catEntries=cat
-    ? Object.entries(catSeries).filter(([k])=>k===cat)
-    : Object.entries(catSeries);
+    ? Object.entries(p5CatSrc).filter(([k])=>k===cat)
+    : Object.entries(p5CatSrc);
   const catDS=catEntries.map(([k,v])=>({label:k,data:applyFilters(v),borderColor:cc[k]||br(),backgroundColor:'transparent',tension:.35,fill:false,pointRadius:2,borderWidth:2}));
   mk('cP5Cats',{type:'line',data:{labels,datasets:catDS},options:{plugins:{legend:{labels:{color:tc(),boxWidth:12}}},scales:{x:{grid:{display:false},ticks:{color:mc(),maxRotation:45,font:{size:11}}},y:{grid:{color:gc()},ticks:{color:mc()}}}}});
 
   // ── P5: Distribuição por estação — filtra por cls e por cat ──
   const estClsVal=document.getElementById('estClsFilter')?document.getElementById('estClsFilter').value:'';
-  const estSrc=estClsVal&&estDataByCls[estClsVal]?estDataByCls[estClsVal]:estData;
+  const effectiveCls=estClsVal||cls;
+  const estSrc=effectiveCls&&estDataByCls[effectiveCls]?estDataByCls[effectiveCls]:estData;
   const estEntries=cat
     ? Object.entries(estSrc).filter(([k])=>k===cat)
     : Object.entries(estSrc);
@@ -1162,8 +1268,13 @@ function renderComments(){
       document.getElementById('p6NewNps').textContent=globalNps.reclass;
     }
 
-    const sk=computeSankey(baseComments);
-    if(sk) document.getElementById('p6Sankey').innerHTML=buildSankey(sk.old,sk.new);
+    if(!key){
+      // Todas as lojas: usa valores reais da base completa (128.341 avaliações)
+      document.getElementById('p6Sankey').innerHTML=buildSankey(SANKEY_GLOBAL.old,SANKEY_GLOBAL.new);
+    } else {
+      const sk=computeSankey(baseComments);
+      if(sk) document.getElementById('p6Sankey').innerHTML=buildSankey(sk.old,sk.new);
+    }
   }
 
   // ── lista de comentários (aplica filtro de cls por cima) ──
@@ -1174,7 +1285,8 @@ function renderComments(){
         const storeBadge=x.store?`<span class="badge" style="border-color:var(--border);color:var(--muted)">${x.store}</span>`:'';
         const clsColor=colorMap[x.cls]||'var(--border)';
         const recClass=x.rec==='Positivo'?'green':x.rec==='Neutro'?'yellow':'red';
-        return `<div class="comment"><div style="margin-bottom:8px;">${storeBadge}<span class="badge" style="border-color:${clsColor};color:${clsColor}">${x.cls}</span><span class="badge b-${recClass}">Reclass.: ${x.rec}</span><span class="badge">${x.cat}</span></div><div style="color:var(--text);line-height:1.65;">${x.txt}</div></div>`;
+        const recLabel=x.rec==='Positivo'?'Promotor':x.rec==='Negativo'?'Detrator':'Neutro';
+        return `<div class="comment"><div style="margin-bottom:8px;">${storeBadge}<span class="badge" style="border-color:${clsColor};color:${clsColor}">${x.cls}</span><span class="badge b-${recClass}">Reclass.: ${recLabel}</span><span class="badge">${x.cat}</span></div><div style="color:var(--text);line-height:1.65;">${x.txt}</div></div>`;
       }).join('')
     : '<div class="topic"><strong>Nenhum comentário</strong><br><small>Ajuste os filtros ou selecione outra loja.</small></div>';
 }
@@ -1183,12 +1295,12 @@ function renderComments(){
 function renderAll(){
   const g=filterState.flag;
   const cat=filterState.cat;
+  const cls=filterState.cls;
 
   // ── P3: tabelas top/bot — reagem a flag e cat ──
   function catDataFiltered(flag, mode){
     const src=flag==='tocador'?catData.tocador:catData.regular;
     const rows=src[mode];
-    // Se filtro de cat ativo, filtra as linhas que batem
     if(cat) return rows.filter(([c])=>c.toLowerCase().includes(cat.toLowerCase().split(' ')[0].toLowerCase()));
     return rows;
   }
@@ -1197,54 +1309,71 @@ function renderAll(){
   renderTable('p3TopToc', catDataFiltered('tocador','top').length?catDataFiltered('tocador','top'):catData.tocador.top, 'top');
   renderTable('p3BotToc', catDataFiltered('tocador','bot').length?catDataFiltered('tocador','bot'):catData.tocador.bot, 'bot');
 
-  // ── NPS KPI: usa valor direto da base real quando sem filtro de data/região/cls ──
+  // ── NPS KPI: usa NPS Ajustado do notebook (NPS_GLOBAL.reclass) ──
   const flagKey=(g&&g!=='all')?g:'all';
   const isFullPeriod=filterState.from==='2025-01'&&filterState.to==='2026-05'
                    &&!filterState.region&&!filterState.cls;
   const npsAvg=isFullPeriod
-    ? NPS_GLOBAL[flagKey].orig.toFixed(2)
-    : (()=>{const s=applyNpsFilters(g==='regular'?npsReg:g==='tocador'?npsToc:npsAll);
+    ? NPS_GLOBAL[flagKey].reclass.toFixed(2)
+    : (()=>{const s=applyNpsFilters(getNpsSeries());
             return s.length?(s.reduce((a,b)=>a+b,0)/s.length).toFixed(2):'—';})();
 
-  // ── Promotores/Detratores/Neutros via comentários filtrados ──
-  let allComms=Object.values(storeDB).flatMap(s=>s.comments.map(c=>({...c,flag:s.flag,region:s.region})));
-  if(g&&g!=='all')       allComms=allComms.filter(c=>c.flag===g);
-  if(filterState.region) allComms=allComms.filter(c=>c.region===filterState.region);
-  if(cat)                allComms=allComms.filter(c=>c.cat===cat);
-  if(filterState.cls)    allComms=allComms.filter(c=>c.cls===filterState.cls);
+  // ── Distribuição Promotor/Neutro/Detrator ──
+  const volData=applyFilters(getVolSeries());
+  const totalVol=volData.reduce((a,b)=>a+b,0)||1;
 
-  const total=allComms.length||1;
-  const nProm=allComms.filter(c=>c.cls==='Promotor').length;
-  const nNeu =allComms.filter(c=>c.cls==='Neutro').length;
-  const nDet =allComms.filter(c=>c.cls==='Detrator').length;
-  const promPct=(nProm/total*100).toFixed(1);
-  const neuPct =(nNeu /total*100).toFixed(1);
-  const detPct =(nDet /total*100).toFixed(1);
+  // Se cls filtro ativo, mostrar 100% da classe selecionada
+  let promPct, neuPct, detPct;
+  if(cls==='Promotor'){ promPct='100.0'; neuPct='0.0'; detPct='0.0'; }
+  else if(cls==='Neutro'){ promPct='0.0'; neuPct='100.0'; detPct='0.0'; }
+  else if(cls==='Detrator'){ promPct='0.0'; neuPct='0.0'; detPct='100.0'; }
+  else {
+    // Sem filtro de cls: calcular a partir dos % mensais ponderados pelo volume
+    const dist=getDistSeries();
+    const distProm=applyFilters(dist.prom);
+    const distNeut=applyFilters(dist.neut);
+    const distDet=applyFilters(dist.det);
+    const volSeries=applyFilters(getVolSeries());
+    let wprom=0, wneut=0, wdet=0, wtotal=0;
+    for(let i=0;i<volSeries.length;i++){
+      wprom+=distProm[i]*volSeries[i];
+      wneut+=distNeut[i]*volSeries[i];
+      wdet+=distDet[i]*volSeries[i];
+      wtotal+=volSeries[i];
+    }
+    promPct=(wprom/(wtotal||1)).toFixed(1);
+    neuPct=(wneut/(wtotal||1)).toFixed(1);
+    detPct=(wdet/(wtotal||1)).toFixed(1);
+  }
 
   // P1 KPIs
   document.getElementById('p1Nps').textContent=npsAvg;
   document.getElementById('p1NpsBig').textContent=npsAvg;
+  document.getElementById('p1Vol').textContent='239.898';
   document.getElementById('p1Prom').textContent=promPct+'%';
   document.getElementById('p1Det').textContent=detPct+'%';
   document.getElementById('p1PromBig').textContent=promPct+'%';
   document.getElementById('p1NeuBig').textContent=neuPct+'%';
   document.getElementById('p1DetBig').textContent=detPct+'%';
 
+  // P1 — Top/Bottom lojas
+  const topEl=document.getElementById('p1TopTable');
+  const botEl=document.getElementById('p1BotTable');
+  if(topEl) topEl.innerHTML=topLojas.map(([l,n],i)=>'<tr><td>'+(i+1)+'</td><td>'+l+'</td><td class="c-green">'+n+'</td></tr>').join('');
+  if(botEl) botEl.innerHTML=botLojas.map(([l,n],i)=>'<tr><td>'+(i+1)+'</td><td>'+l+'</td><td class="c-red">'+n+'</td></tr>').join('');
+
   // P3 KPIs — médias das séries filtradas
   const regF=applyNpsFilters(npsReg), tocF=applyNpsFilters(npsToc);
-  const regAvg=regF.length?(regF.reduce((a,b)=>a+b,0)/regF.length).toFixed(2):0;
-  const tocAvg=tocF.length?(tocF.reduce((a,b)=>a+b,0)/tocF.length).toFixed(2):0;
+  const regAvg=regF.length?(regF.reduce((a,b)=>a+b,0)/regF.length).toFixed(1):0;
+  const tocAvg=tocF.length?(tocF.reduce((a,b)=>a+b,0)/tocF.length).toFixed(1):0;
   document.getElementById('p3Reg').textContent=regAvg;
   document.getElementById('p3Toc').textContent=tocAvg;
-  document.getElementById('p3Gap').textContent=(regAvg-tocAvg).toFixed(2)+' pts';
+  document.getElementById('p3Gap').textContent=(regAvg-tocAvg).toFixed(1)+' pts';
 
-  // P4 KPIs — sentimento reclassificado
-  const nPos=allComms.filter(c=>c.rec==='Positivo').length;
-  const nNeuRec=allComms.filter(c=>c.rec==='Neutro').length;
-  const nNeg=allComms.filter(c=>c.rec==='Negativo').length;
-  document.querySelector('#p4 .val.c-green').textContent=(nPos/total*100).toFixed(1)+'%';
-  document.querySelector('#p4 .val.c-yellow').textContent=(nNeuRec/total*100).toFixed(1)+'%';
-  document.querySelector('#p4 .val.c-red').textContent=(nNeg/total*100).toFixed(1)+'%';
+  // P4 KPIs — sentimento baseado na classificação
+  document.querySelector('#p4 .val.c-green').textContent=promPct+'%';
+  document.querySelector('#p4 .val.c-yellow').textContent=neuPct+'%';
+  document.querySelector('#p4 .val.c-red').textContent=detPct+'%';
 
   // P4 — barras de cobertura
   const p4Fills=document.querySelectorAll('#p4 .bar-fill');
@@ -1258,7 +1387,7 @@ function renderAll(){
   });
 
   // P5 — label classificação ativo
-  document.getElementById('p5ClsLabel').textContent=filterState.cls||'Todos';
+  document.getElementById('p5ClsLabel').textContent=cls||'Todos';
 
   // P6 — divergências reagem ao flag quando "todas as lojas"
   const dg=DIV_GLOBAL[flagKey]||DIV_GLOBAL.all;
